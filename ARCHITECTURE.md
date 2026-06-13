@@ -42,13 +42,13 @@
 
 Cylentic est une **application web classique 3-tiers** augmentée d'une **couche d'exécution de code isolée** :
 
-- **Frontend SPA (React)** — 4 espaces selon le rôle (Admin établissement, Professeur, Étudiant, + page publique d'inscription établissement). L'espace étudiant embarque l'IDE (Monaco) et les mécanismes anti-triche du navigateur.
+- **Frontend SPA (React)** — 3 espaces selon le rôle (Admin établissement, Professeur, Étudiant) plus une page publique d'inscription d'établissement. L'espace étudiant embarque l'IDE (Monaco) et les mécanismes anti-triche du navigateur.
 - **Backend API (Node.js / Express)** — logique métier, authentification, orchestration de l'exécution de code, calcul des scores, journalisation des incidents.
 - **PostgreSQL** — source de vérité persistante (utilisateurs, examens, soumissions, incidents, audit).
 - **Redis** — sessions actives, timers d'examen côté serveur, canal temps réel (suivi live du prof), file d'attente d'exécution.
 - **Judge0** — moteur d'exécution de code open-source, isolé dans Docker (sans réseau, limites CPU/mémoire/temps).
 
-Les 4 acteurs et leurs droits sont déduits **automatiquement du format de l'identifiant** (`ETU-…`, `PROF-…`, `ADM-…`) — jamais d'auto-sélection de rôle.
+Les 3 acteurs et leurs droits sont déduits **automatiquement du format de l'identifiant** (`ETU-…`, `PROF-…`, `ADM-…`) — jamais d'auto-sélection de rôle. Le surveillant physique en salle n'a pas de compte sur la plateforme : son rôle est purement humain.
 
 ---
 
@@ -56,7 +56,7 @@ Les 4 acteurs et leurs droits sont déduits **automatiquement du format de l'ide
 
 | Couche | Technologie | Rôle |
 |--------|------------|------|
-| Frontend | **React** + Vite, React Router, TanStack Query, Zustand | SPA, 4 espaces par rôle |
+| Frontend | **React** + Vite, React Router, TanStack Query, Zustand | SPA, 3 espaces par rôle |
 | IDE intégré | **Monaco Editor** | Édition de code dans le navigateur |
 | Anti-triche client | Fullscreen API, Page Visibility API, Clipboard API | Plein écran forcé, détection d'onglet, blocage presse-papier |
 | Backend | **Node.js + Express** | API REST, logique métier |
