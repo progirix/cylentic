@@ -1,0 +1,27 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam nodesep 40
+skinparam ranksep 45
+
+title Diagramme d'états : Cycle de vie d'un examen
+
+[*] --> Brouillon : création
+
+state Brouillon
+state Publié
+state "En cours" as EnCours
+state Terminé
+state Archivé
+
+Brouillon --> Publié : publication
+Publié --> EnCours : démarrage
+EnCours --> Terminé : clôture
+Terminé --> Archivé : archivage
+
+Brouillon --> [*] : suppression
+Publié --> [*] : suppression
+
+Archivé --> [*]
+
+@enduml
