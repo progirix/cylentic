@@ -6,15 +6,30 @@ skinparam packageStyle rectangle
 actor "Super administrateur" as SA
 
 rectangle "Cylentic" {
-  usecase "Se connecter" as UC1
-  usecase "Consulter le tableau de bord" as UC2
-  usecase "Consulter les statistiques globales" as UC3
-  usecase "Consulter la liste des établissements" as UC4
-  usecase "Suspendre un établissement" as UC5
-  usecase "Réactiver un établissement" as UC6
-  usecase "Consulter les plans tarifaires" as UC7
-  usecase "Modifier un plan tarifaire" as UC8
-  usecase "Consulter les feedbacks" as UC9
+
+  package "Authentification" {
+    usecase "Se connecter" as UC1
+  }
+
+  package "Vue d'ensemble" {
+    usecase "Consulter le tableau de bord" as UC2
+    usecase "Consulter les statistiques globales" as UC3
+  }
+
+  package "Gestion des établissements" {
+    usecase "Consulter la liste des établissements" as UC4
+    usecase "Suspendre un établissement" as UC5
+    usecase "Réactiver un établissement" as UC6
+  }
+
+  package "Gestion des plans tarifaires" {
+    usecase "Consulter les plans tarifaires" as UC7
+    usecase "Modifier un plan tarifaire" as UC8
+  }
+
+  package "Support" {
+    usecase "Consulter les feedbacks" as UC9
+  }
 }
 
 SA --> UC1
