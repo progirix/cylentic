@@ -1,78 +1,34 @@
-@startuml 01_usecase_super_admin
-!theme plain
-skinparam packageStyle rectangle
-skinparam shadowing false
-skinparam actorStyle awesome
-skinparam handwritten false
-skinparam defaultFontName Arial
-skinparam usecase {
-  BackgroundColor #FEFEFE
-  BorderColor #333333
-}
-
-title Diagramme de cas d'utilisation — Super Admin\n(Cylentic — basé sur le code réel)
-
+@startuml
 left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
 
-actor "Super Admin\n(SADM-…)" as SA
+actor "Super administrateur" as SA
 
-rectangle "Cylentic — Espace Super Admin" {
-
-  package "Authentification" {
-    usecase "Se connecter\n(identifiant SADM-)" as UC_LOGIN
-  }
-
-  package "Vue d'ensemble" {
-    usecase "Consulter le tableau de bord" as UC_DASH
-    usecase "Consulter les statistiques globales" as UC_STATS
-  }
-
-  package "Gestion des établissements" {
-    usecase "Consulter la liste des établissements" as UC_LIST_EST
-    usecase "Suspendre un établissement" as UC_SUSPEND
-    usecase "Réactiver un établissement" as UC_REACTIVATE
-  }
-
-  package "Gestion des plans tarifaires" {
-    usecase "Consulter les plans tarifaires" as UC_LIST_PLANS
-    usecase "Modifier un plan tarifaire" as UC_UPD_PLAN
-  }
-
-  package "Support" {
-    usecase "Consulter les feedbacks" as UC_FEEDBACK
-  }
+rectangle "Cylentic" {
+  usecase "Se connecter" as UC1
+  usecase "Consulter le tableau de bord" as UC2
+  usecase "Consulter les statistiques globales" as UC3
+  usecase "Consulter la liste des établissements" as UC4
+  usecase "Suspendre un établissement" as UC5
+  usecase "Réactiver un établissement" as UC6
+  usecase "Consulter les plans tarifaires" as UC7
+  usecase "Modifier un plan tarifaire" as UC8
+  usecase "Consulter les feedbacks" as UC9
 }
 
-SA --> UC_LOGIN
-SA --> UC_DASH
-SA --> UC_STATS
-SA --> UC_LIST_EST
-SA --> UC_SUSPEND
-SA --> UC_REACTIVATE
-SA --> UC_LIST_PLANS
-SA --> UC_UPD_PLAN
-SA --> UC_FEEDBACK
+SA --> UC1
+SA --> UC2
+SA --> UC3
+SA --> UC4
+SA --> UC5
+SA --> UC6
+SA --> UC7
+SA --> UC8
+SA --> UC9
 
-UC_DASH ..> UC_STATS : <<include>>
-UC_SUSPEND ..> UC_LIST_EST : <<include>>
-UC_REACTIVATE ..> UC_LIST_EST : <<include>>
-UC_UPD_PLAN ..> UC_LIST_PLANS : <<include>>
-
-note right of UC_LOGIN
-  Table : platform_admins
-  Auth spécifique hors table users
-  Fichiers : auth.service.ts, roles.ts
-end note
-
-note bottom of UC_FEEDBACK
-  Page présente dans la navigation,
-  mais module encore placeholder
-  (non branché à une table dédiée)
-end note
-
-note bottom of UC_SUSPEND
-  PATCH /api/super-admin/establishments
-  champ isActive = false / true
-end note
+UC5 ..> UC4 : <<include>>
+UC6 ..> UC4 : <<include>>
+UC8 ..> UC7 : <<include>>
 
 @enduml
