@@ -1,0 +1,54 @@
+@startuml
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam componentStyle rectangle
+skinparam nodesep 35
+skinparam ranksep 40
+
+title Architecture logique de Cylentic
+
+actor "Utilisateur\n(navigateur)" as User
+
+package "Couche présentation" as Pres {
+  [Pages et espaces applicatifs] as Pages
+  [Éditeur Monaco] as Monaco
+  [Contrôles de passation\n(hooks client)] as Hooks
+}
+
+package "Application Next.js\n(monolithe modulaire)" as App {
+  [Middleware d'authentification] as MW
+  [Routes API] as API
+  [Services métier\n(auth, examens, participation,\ncorrection, sandbox)] as Services
+  [Workers\n(correction, statuts)] as Workers
+}
+
+package "Persistance et files" as Data {
+  database "MySQL\n(données durables)" as MySQL
+  database "Redis\n(cache / files, cible)" as Redis
+}
+
+package "Exécution isolée" as Exec {
+  [Sandbox Docker Python] as Sandbox
+}
+
+User --> Pages
+Pages --> Monaco
+Pages --> Hooks
+Pages --> MW
+MW --> API
+API --> Services
+Services --> MySQL
+Services ..> Redis : prévu MVP+
+Workers --> Services
+Workers --> MySQL
+Workers ..> Redis : prévu MVP+
+Services --> Sandbox : exécution du code étudiant
+
+note right of App
+  Un seul processus Next.js
+  sert les pages et l'API.
+  Les frontières internes
+  préparent une évolution.
+end note
+
+@enduml

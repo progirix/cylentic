@@ -30,4 +30,5 @@ incidents (plein écran, onglet, presse-papiers…), correction automatique, MyS
 Suivre `docs/Plan_Rapport_Cylentic.docx`. Global corps : ~45–65 pages.
 
 ## Diagrammes
-Source : `docs/diagrammes/*.puml` (cas d'utilisation → activité 16a/16b).
+Source : `docs/diagrammes/*.puml` (architecture logique `00_` → cas d'utilisation → activité 16a/16b).
+Exporter en PNG (`plantuml -tpng`) ; le script `build_rapport_final_esta.py` les insère dans le Word.

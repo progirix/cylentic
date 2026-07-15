@@ -359,9 +359,54 @@ def add_caption(doc, kind: str, title: str, *, align="center", bold=False):
     return para, n
 
 
+FIGURE_IMAGE_FILES = {
+    "Architecture logique de Cylentic": "00_architecture_logique.png",
+    "Déploiement de l'infrastructure": "08_deploiement.png",
+    "Cas d'utilisation du Super Admin": "01_usecase_super_admin.png",
+    "Cas d'utilisation de l'administrateur (organisation)": "02a_usecase_admin_organisation.png",
+    "Cas d'utilisation de l'administrateur (comptes)": "02b_usecase_admin_comptes.png",
+    "Cas d'utilisation du professeur (examens)": "03a_usecase_professeur_examens.png",
+    "Cas d'utilisation du professeur (suivi)": "03b_usecase_professeur_suivi.png",
+    "Cas d'utilisation de l'étudiant": "04_usecase_etudiant.png",
+    "Classes organisation et comptes": "05a_classes_organisation.png",
+    "Classes conception d'examen": "05b1_classes_conception_examen.png",
+    "Classes passation et correction": "05b2_classes_passation.png",
+    "Objets organisation": "06a_objets_organisation.png",
+    "Objets conception d'examen": "06b_objets_conception_examen.png",
+    "Objets passation": "06c_objets_passation.png",
+    "Composants vue d'ensemble": "07a_composants_vue_ensemble.png",
+    "Composants administration et authentification": "07b_composants_admin_auth.png",
+    "Composants examens et passation": "07c_composants_examens.png",
+    "États du cycle de vie d'un examen": "09_etats_examen.png",
+    "Séquence de connexion": "10_sequence_connexion.png",
+    "Séquence de publication d'un examen": "11_sequence_publication.png",
+    "Séquence d'accès étudiant": "12_sequence_acces_etudiant.png",
+    "Séquence d'exécution du code": "13_sequence_execution.png",
+    "Séquence de soumission et correction": "14_sequence_soumission_correction.png",
+    "Séquence d'enregistrement d'un incident": "15_sequence_incidents.png",
+    "Activité accès et salle d'attente": "16a_activite_acces_attente.png",
+    "Activité composition et soumission": "16b_activite_composition_soumission.png",
+}
+
+DIAGRAMMES_DIR = Path("/workspace/docs/diagrammes")
+
+
 def figure_slot(doc, title: str):
-    # Légende seule : l'image sera insérée juste au-dessus dans Word.
-    p(doc, "", first_line=False, space_after=24)
+    """Insère l'image UML si disponible, puis la légende numérotée."""
+    img_name = FIGURE_IMAGE_FILES.get(title)
+    img_path = DIAGRAMMES_DIR / img_name if img_name else None
+    para = doc.add_paragraph()
+    para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    para.paragraph_format.space_after = Pt(4)
+    para.paragraph_format.line_spacing = 1.0
+    if img_path and img_path.is_file():
+        run = para.add_run()
+        # Largeur max ~14 cm pour rester dans les marges
+        run.add_picture(str(img_path), width=Cm(14.0))
+    else:
+        # Captures ch.4 ou fichiers absents : emplacement réservé
+        run = para.add_run("")
+        para.paragraph_format.space_after = Pt(24)
     add_caption(doc, "Figure", title, align="center")
 
 
