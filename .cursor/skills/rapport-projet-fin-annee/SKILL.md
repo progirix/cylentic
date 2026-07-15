@@ -18,10 +18,14 @@ description: >
 - Dans l'école de l'auteur, un projet est mené **chaque année** avec un rapport ;
   c'est le « petit frère » du PFE, au niveau prépa puis année de cycle ingénieur informatique.
 - L'école **n'a pas fourni** de trame officielle.
-- La **mise en forme** s'inspire d'un document PDF d'un autre établissement burkinabè
-  (fourni par l'utilisateur). Tant que le PDF n'est pas disponible, rester sobre,
-  académique et cohérent ; dès qu'il est fourni, aligner marges, numérotation,
-  styles de titres et présentation des figures dessus.
+- La **mise en forme** s'inspire du guide ESTA (Burkina Faso) fourni par l'utilisateur :
+  Times New Roman, corps 12, titres 14, légendes 11, interligne 1,5, texte justifié,
+  marges 2,5 cm (reliure 1 cm), figures numérotées avec légende en bas,
+  tableaux avec titre en haut, numérotation arabe des chapitres,
+  pages de tête en romain, corps à partir de l'introduction générale.
+- Groupe de **trois** auteurs, **un encadrant principal** et **un second encadrant**.
+- Interdiction stricte : tirets longs (—) au milieu des phrases, emojis,
+  et tournures caractéristiques des textes générés mécaniquement.
 - Les **volumes / plafonds de pages** restent ceux du plan validé
   (`docs/Plan_Rapport_Cylentic.docx`). Ne pas exploser les plafonds.
 - Les **titres** des parties/chapitres/sections ne sont pas figés : le skill doit
