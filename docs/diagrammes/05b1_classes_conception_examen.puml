@@ -13,17 +13,34 @@ class Establishment {
   id
   name
   acronym
+  type
+  country
+  city
+  timezone
+  officialEmail
+  phone
+  isActive
 }
 
 class User {
   id
   identifier
   role
+  email
+  firstName
+  lastName
+  passwordHash
+  mustChangePassword
+  isActive
+  lastLoginAt
 }
 
 class Class {
   id
   name
+  track
+  level
+  isArchived
 }
 
 class Exam {
