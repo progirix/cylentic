@@ -4,27 +4,14 @@ skinparam ActivityBorderColor #333333
 skinparam ActivityBackgroundColor #FFFFFF
 skinparam ActivityDiamondBackgroundColor #FFFFFF
 
-title Diagramme d'activité : Passation d'un examen par un étudiant
+title Diagramme d'activité 2/2 : Composition, incidents et soumission
 
 start
 
-:Saisir identifiant, mot de passe et code d'examen;
-:Authentifier l'étudiant et vérifier le code;
-
-if (Accès autorisé ?) then (non)
-  :Afficher le message d'erreur;
-  stop
-else (oui)
-endif
-
-:Afficher les consignes de sécurité;
-:Activer le plein écran;
-:Créer ou mettre à jour la participation;
-:Entrer en salle d'attente;
-
-while (Heure de début atteinte ?) is (non)
-  :Rester en salle d'attente;
-endwhile (oui)
+note right
+  Suite du diagramme
+  d'activité 1/2
+end note
 
 :Passer en phase de composition;
 
