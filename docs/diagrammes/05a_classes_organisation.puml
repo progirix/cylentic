@@ -103,21 +103,18 @@ class AdminActivityLog {
   createdAt
 }
 
-SubscriptionPlan "1" -- "0..*" EstablishmentSubscription
-Establishment "1" -- "0..*" EstablishmentSubscription
-Establishment "1" -- "0..*" AcademicYear
-Establishment "1" -- "0..*" Class
-Establishment "1" -- "0..*" User
-Establishment "1" -- "0..*" AdminActivityLog
-
-User "1" -- "0..1" AdminProfile
-User "1" -- "0..1" TeacherProfile
-User "1" -- "0..1" StudentProfile
-User "0..1" -- "0..*" AdminActivityLog
-
-Class "1" -- "0..*" StudentProfile
-AcademicYear "1" -- "0..*" StudentProfile
-
 PlatformAdmin "1" -- "0..*" Establishment : administre
+SubscriptionPlan "1" -- "0..*" EstablishmentSubscription : définit
+Establishment "1" -- "0..*" EstablishmentSubscription : souscrit
+Establishment "1" -- "0..*" AcademicYear : organise
+Establishment "1" -- "0..*" Class : regroupe
+Establishment "1" -- "0..*" User : emploie
+Establishment "1" -- "0..*" AdminActivityLog : journalise
+User "1" -- "0..1" AdminProfile : possède
+User "1" -- "0..1" TeacherProfile : possède
+User "1" -- "0..1" StudentProfile : possède
+User "0..1" -- "0..*" AdminActivityLog : réalise
+Class "1" -- "0..*" StudentProfile : accueille
+AcademicYear "1" -- "0..*" StudentProfile : concerne
 
 @enduml

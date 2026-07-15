@@ -131,28 +131,25 @@ class Incident {
   payload
 }
 
-Establishment "1" -- "0..*" Exam
+Establishment "1" -- "0..*" Exam : détient
 User "1" -- "0..*" Exam : crée
-Exam "1" -- "0..*" ExamClass
-Class "1" -- "0..*" ExamClass
-Exam "1" -- "0..*" Exercise
-Exam "1" -- "0..*" ExamParticipation
+Exam "1" -- "0..*" ExamClass : autorise
+Class "1" -- "0..*" ExamClass : participe
+Exam "1" -- "0..*" Exercise : contient
+Exam "1" -- "0..*" ExamParticipation : regroupe
 User "1" -- "0..*" ExamParticipation : compose
-
-Exercise "1" -- "0..*" UnitTest
-Exercise "1" -- "0..*" QcmQuestion
-QcmQuestion "1" -- "0..*" QcmChoice
-
-ExamParticipation "1" -- "0..*" Submission
-Exercise "1" -- "0..*" Submission
-ExamParticipation "1" -- "0..*" CodeAutosave
-Exercise "1" -- "0..*" CodeAutosave
-ExamParticipation "1" -- "0..*" Incident
-
-Submission "1" -- "0..*" SubmissionTestResult
-UnitTest "1" -- "0..*" SubmissionTestResult
-Submission "1" -- "0..*" QcmAnswer
-QcmQuestion "1" -- "0..*" QcmAnswer
-QcmChoice "1" -- "0..*" QcmAnswer
+Exercise "1" -- "0..*" UnitTest : évalue
+Exercise "1" -- "0..*" QcmQuestion : pose
+QcmQuestion "1" -- "0..*" QcmChoice : propose
+ExamParticipation "1" -- "0..*" Submission : produit
+Exercise "1" -- "0..*" Submission : cible
+ExamParticipation "1" -- "0..*" CodeAutosave : conserve
+Exercise "1" -- "0..*" CodeAutosave : concerne
+ExamParticipation "1" -- "0..*" Incident : génère
+Submission "1" -- "0..*" SubmissionTestResult : obtient
+UnitTest "1" -- "0..*" SubmissionTestResult : vérifie
+Submission "1" -- "0..*" QcmAnswer : contient
+QcmQuestion "1" -- "0..*" QcmAnswer : reçoit
+QcmChoice "1" -- "0..*" QcmAnswer : sélectionne
 
 @enduml
