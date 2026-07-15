@@ -64,11 +64,15 @@ def insert_heading_after(paragraph, text, level=2):
     return new_para
 
 
-def find_para(doc, pred):
-    for p in doc.paragraphs:
-        if pred(p.text.strip()):
-            return p
-    return None
+def find_para(doc, pred, prefer_heading=False):
+    matches = [p for p in doc.paragraphs if pred(p.text.strip())]
+    if not matches:
+        return None
+    if prefer_heading:
+        headed = [p for p in matches if p.style and str(p.style.name).startswith("Heading")]
+        if headed:
+            return headed[-1]
+    return matches[-1]
 
 
 def clear_until(doc, heading_p, stops):
@@ -108,7 +112,11 @@ def fill_with_blocks(doc, chapter_heading, stops, blocks):
     blocks: list of ('h2'|'h3'|'p'|'fig', text, opts?)
     Removes everything under chapter until stops, rebuilds headings + content.
     """
-    heading_p = find_para(doc, lambda t, h=chapter_heading: t.startswith(h))
+    heading_p = find_para(
+        doc,
+        lambda t, h=chapter_heading: t.startswith(h),
+        prefer_heading=True,
+    )
     if heading_p is None:
         raise SystemExit(f"Missing {chapter_heading}")
     clear_until(doc, heading_p, stops)
@@ -617,7 +625,7 @@ def main():
     )
 
     # Update conclusion générale to reflect realization + tests
-    concl = find_para(doc, lambda t: t == "Conclusion générale")
+    concl = find_para(doc, lambda t: t == "Conclusion générale", prefer_heading=True)
     if concl is not None:
         # replace following paragraphs until Bibliographie
         clear_until(doc, concl, ["Bibliographie", "Bibliographie et webographie"])
