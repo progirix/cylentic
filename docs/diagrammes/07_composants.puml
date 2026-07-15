@@ -21,7 +21,7 @@ package "Navigateur" {
 package "Application Next.js" {
   [Middleware d'authentification] as MW
 
-  package "Couche API" {
+  package "Couche API" as CoucheAPI {
     [API Authentification] as ApiAuth
     [API Établissements et utilisateurs] as ApiUsers
     [API Examens] as ApiExams
@@ -31,7 +31,7 @@ package "Application Next.js" {
     [API Super Admin] as ApiSA
   }
 
-  package "Couche métier" {
+  package "Couche métier" as CoucheMetier {
     [Service Authentification] as SvcAuth
     [Service Établissement] as SvcEtab
     [Service Utilisateurs] as SvcUsers
@@ -44,13 +44,13 @@ package "Application Next.js" {
     [Validateurs Zod] as Zod
   }
 
-  package "Accès aux données" {
+  package "Accès aux données" as CoucheData {
     [Repositories] as Repo
     [Client Prisma] as Prisma
     [Client Redis] as RedisClient
   }
 
-  package "Workers" {
+  package "Workers" as CoucheWorkers {
     [Worker de correction] as WGrade
     [Worker de statut d'examen] as WStatus
   }
@@ -73,13 +73,7 @@ Adm --> MW
 Prof --> MW
 Etu --> MW
 
-MW --> ApiAuth
-MW --> ApiUsers
-MW --> ApiExams
-MW --> ApiSession
-MW --> ApiResults
-MW --> ApiBilling
-MW --> ApiSA
+MW --> CoucheAPI
 
 ApiAuth --> SvcAuth
 ApiUsers --> SvcEtab
@@ -91,33 +85,18 @@ ApiResults --> SvcResults
 ApiBilling --> SvcBilling
 ApiSA --> SvcSA
 
-SvcAuth --> Zod
-SvcEtab --> Zod
-SvcUsers --> Zod
-SvcExams --> Zod
-SvcPart --> Zod
-SvcBilling --> Zod
-
-SvcAuth --> Repo
-SvcEtab --> Repo
-SvcUsers --> Repo
-SvcExams --> Repo
-SvcPart --> Repo
-SvcResults --> Repo
-SvcBilling --> Repo
-SvcSA --> Repo
+CoucheMetier --> Repo
+CoucheMetier --> Zod
+CoucheWorkers --> Repo
 
 Repo --> Prisma
 Prisma --> DB
 
-SvcAuth --> RedisClient
-SvcPart --> RedisClient
-WStatus --> RedisClient
+CoucheMetier --> RedisClient
+CoucheWorkers --> RedisClient
 RedisClient --> Redis
 
 SvcSandbox --> Sandbox
 WGrade --> SvcSandbox
-WGrade --> Repo
-WStatus --> Repo
 
 @enduml
