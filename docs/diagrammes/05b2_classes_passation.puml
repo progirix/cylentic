@@ -4,23 +4,12 @@ skinparam classAttributeIconSize 0
 hide empty methods
 hide circle
 
-title Diagramme de classes : Examens, soumissions et incidents
-
-class Establishment {
-  id
-  name
-  acronym
-}
+title Diagramme de classes : Passation, soumissions et incidents (2/2)
 
 class User {
   id
   identifier
   role
-}
-
-class Class {
-  id
-  name
 }
 
 class Exam {
@@ -36,9 +25,6 @@ class Exam {
   publishedAt
   startedAt
   endedAt
-}
-
-class ExamClass {
 }
 
 class Exercise {
@@ -132,16 +118,8 @@ class Incident {
   payload
 }
 
-Establishment "1" -- "0..*" Exam : "détient"
-User "1" -- "0..*" Exam : "crée"
-Exam "1" -- "0..*" ExamClass : "autorise"
-Class "1" -- "0..*" ExamClass : "participe"
-Exam "1" -- "0..*" Exercise : "contient"
 Exam "1" -- "0..*" ExamParticipation : "regroupe"
 User "1" -- "0..*" ExamParticipation : "compose"
-Exercise "1" -- "0..*" UnitTest : "évalue"
-Exercise "1" -- "0..*" QcmQuestion : "pose"
-QcmQuestion "1" -- "0..*" QcmChoice : "propose"
 ExamParticipation "1" -- "0..*" Submission : "produit"
 Exercise "1" -- "0..*" Submission : "cible"
 ExamParticipation "1" -- "0..*" CodeAutosave : "conserve"
@@ -152,5 +130,9 @@ UnitTest "1" -- "0..*" SubmissionTestResult : "vérifie"
 Submission "1" -- "0..*" QcmAnswer : "contient"
 QcmQuestion "1" -- "0..*" QcmAnswer : "reçoit"
 QcmChoice "1" -- "0..*" QcmAnswer : "sélectionne"
+Exam "1" -- "0..*" Exercise : "contient"
+Exercise "1" -- "0..*" UnitTest : "évalue"
+Exercise "1" -- "0..*" QcmQuestion : "pose"
+QcmQuestion "1" -- "0..*" QcmChoice : "propose"
 
 @enduml

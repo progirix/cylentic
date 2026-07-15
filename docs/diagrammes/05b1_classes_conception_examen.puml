@@ -1,0 +1,89 @@
+@startuml
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+hide empty methods
+hide circle
+
+title Diagramme de classes : Conception d'examen (1/2)
+
+class Establishment {
+  id
+  name
+  acronym
+}
+
+class User {
+  id
+  identifier
+  role
+}
+
+class Class {
+  id
+  name
+}
+
+class Exam {
+  id
+  name
+  status
+  startAt
+  durationMinutes
+  accessDelayMinutes
+  correctionMode
+  accessCode
+  maxIncidentsBeforeClose
+  publishedAt
+  startedAt
+  endedAt
+}
+
+class ExamClass {
+}
+
+class Exercise {
+  id
+  type
+  title
+  statement
+  language
+  points
+  correctionMode
+  orderIndex
+}
+
+class UnitTest {
+  id
+  input
+  expectedOutput
+  weight
+  isHidden
+  orderIndex
+}
+
+class QcmQuestion {
+  id
+  text
+  answerType
+  points
+  explanation
+  orderIndex
+}
+
+class QcmChoice {
+  id
+  text
+  isCorrect
+  orderIndex
+}
+
+Establishment "1" -- "0..*" Exam : "détient"
+User "1" -- "0..*" Exam : "crée"
+Exam "1" -- "0..*" ExamClass : "autorise"
+Class "1" -- "0..*" ExamClass : "participe"
+Exam "1" -- "0..*" Exercise : "contient"
+Exercise "1" -- "0..*" UnitTest : "évalue"
+Exercise "1" -- "0..*" QcmQuestion : "pose"
+QcmQuestion "1" -- "0..*" QcmChoice : "propose"
+
+@enduml
