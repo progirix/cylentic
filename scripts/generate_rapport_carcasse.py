@@ -576,6 +576,15 @@ def build():
         "séquences disent comment les messages circulent. Les activités disent "
         "comment un étudiant traverse la journée d'épreuve.",
     )
+    add_paragraph(
+        doc,
+        "Nous avons aussi refusé deux dérives fréquentes. La première consiste à "
+        "produire des diagrammes décoratifs, trop génériques pour guider le code. "
+        "La seconde consiste à coller le schéma de base de données tel quel et à "
+        "l'appeler conception. Ici, chaque figure a un rôle dans le raisonnement : "
+        "expliquer une responsabilité, une contrainte ou un enchaînement critique "
+        "du MVP.",
+    )
 
     # 3.2
     add_heading_styled(doc, "3.2 Architecture générale et déploiement", 2)
