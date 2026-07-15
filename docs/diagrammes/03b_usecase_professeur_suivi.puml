@@ -34,8 +34,6 @@ Prof --> UC20
 Prof --> UC21
 Prof --> UC22
 
-UC20 ..> UC19 : <<extend>>
-UC19 ..> UC18 : <<include>>
-UC17 ..> UC19 : <<include>>
+UC20 ..> UC18 : <<extend>>
 
 @enduml
