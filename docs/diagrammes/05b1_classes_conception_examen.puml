@@ -42,6 +42,8 @@ class Exam {
 }
 
 class ExamClass {
+  examId
+  classId
 }
 
 class Exercise {
