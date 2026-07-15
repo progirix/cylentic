@@ -1,0 +1,57 @@
+@startuml
+skinparam shadowing false
+skinparam ActivityBorderColor #333333
+skinparam ActivityBackgroundColor #FFFFFF
+skinparam ActivityDiamondBackgroundColor #FFFFFF
+
+title Diagramme d'activité : Passation d'un examen par un étudiant
+
+start
+
+:Saisir identifiant, mot de passe et code d'examen;
+:Authentifier l'étudiant et vérifier le code;
+
+if (Accès autorisé ?) then (non)
+  :Afficher le message d'erreur;
+  stop
+else (oui)
+endif
+
+:Afficher les consignes de sécurité;
+:Activer le plein écran;
+:Créer ou mettre à jour la participation;
+:Entrer en salle d'attente;
+
+while (Heure de début atteinte ?) is (non)
+  :Rester en salle d'attente;
+endwhile (oui)
+
+:Passer en phase de composition;
+
+repeat
+  :Répondre aux exercices code et QCM;
+  :Sauvegarder automatiquement le code;
+
+  if (Exécution demandée ?) then (oui)
+    :Exécuter le code dans le sandbox;
+    :Afficher la sortie;
+  else (non)
+  endif
+
+  if (Incident détecté ?) then (oui)
+    :Enregistrer l'incident;
+    if (Seuil d'exclusion atteint ?) then (oui)
+      :Soumettre la copie avec exclusion;
+    else (non)
+      :Avertir et exiger le retour en plein écran si besoin;
+    endif
+  else (non)
+  endif
+repeat while (Fin de composition ?\nsoumission, timer ou exclusion) is (non)
+
+:Corriger automatiquement les soumissions;
+:Afficher la confirmation de fin d'examen;
+
+stop
+
+@enduml
