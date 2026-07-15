@@ -1,0 +1,113 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam nodesep 30
+skinparam ranksep 35
+hide empty methods
+hide circle
+
+title Diagramme d'objets 2/3 : Conception de l'examen
+
+object "etab1: Establishment" as etab1 {
+  id = "est-001"
+  name = "École d'Ingénieurs de Ouagadougou"
+  acronym = "EIO"
+  type = "engineering_school"
+  country = "Burkina Faso"
+  city = "Ouagadougou"
+  timezone = "Africa/Ouagadougou"
+  officialEmail = "contact@eio.bf"
+  phone = "+22670000000"
+  isActive = true
+  onboardingCompletedAt = "2026-06-01 10:00:00"
+}
+
+object "classeL3: Class" as classeL3 {
+  id = "class-l3"
+  establishmentId = "est-001"
+  name = "L3 Informatique"
+  track = "Informatique"
+  level = "L3"
+  isArchived = false
+}
+
+object "prof1: User" as prof1 {
+  id = "user-prof-1"
+  establishmentId = "est-001"
+  identifier = "PROF-EIO-0001"
+  role = "teacher"
+  email = "kouassi@eio.bf"
+  firstName = "Jean"
+  lastName = "Kouassi"
+  passwordHash = "***"
+  mustChangePassword = false
+  isActive = true
+  lastLoginAt = "2026-07-15 07:00:00"
+}
+
+object "examen1: Exam" as examen1 {
+  id = "exam-001"
+  establishmentId = "est-001"
+  teacherId = "user-prof-1"
+  name = "Examen Python Fonctions"
+  status = "in_progress"
+  startAt = "2026-07-15 08:00:00"
+  durationMinutes = 90
+  accessDelayMinutes = 15
+  correctionMode = "auto"
+  accessCode = "K7M2-9XPQ"
+  maxIncidentsBeforeClose = 2
+  timezone = "Africa/Ouagadougou"
+  publishedAt = "2026-07-14 18:00:00"
+  startedAt = "2026-07-15 08:00:00"
+  endedAt = null
+}
+
+object "lienExamClasse1: ExamClass" as lienExamClasse1 {
+  examId = "exam-001"
+  classId = "class-l3"
+}
+
+object "exoSomme: Exercise" as exoSomme {
+  id = "ex-001"
+  examId = "exam-001"
+  type = "code"
+  title = "Somme de deux entiers"
+  statement = "Écrire une fonction somme(a, b) qui retourne a + b."
+  language = "python"
+  judge0LanguageId = 71
+  points = 10
+  correctionMode = "auto"
+  orderIndex = 0
+}
+
+object "test1: UnitTest" as test1 {
+  id = "ut-001"
+  exerciseId = "ex-001"
+  input = "2 3"
+  expectedOutput = "5"
+  weight = 1
+  isHidden = false
+  orderIndex = 0
+}
+
+object "test2: UnitTest" as test2 {
+  id = "ut-002"
+  exerciseId = "ex-001"
+  input = "0 0"
+  expectedOutput = "0"
+  weight = 1
+  isHidden = false
+  orderIndex = 1
+}
+
+etab1 -- examen1 : détient
+prof1 -- examen1 : crée
+examen1 -- lienExamClasse1 : autorise
+classeL3 -- lienExamClasse1 : participe
+examen1 -- exoSomme : contient
+exoSomme -- test1 : évalue
+exoSomme -- test2 : évalue
+
+@enduml
