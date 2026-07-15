@@ -1,0 +1,123 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam nodesep 35
+skinparam ranksep 40
+
+title Diagramme de composants : Cylentic
+
+actor "Utilisateur" as User
+
+package "Navigateur" {
+  [Pages publiques] as Pub
+  [Espace Super Admin] as SA
+  [Espace Admin] as Adm
+  [Espace Professeur] as Prof
+  [Espace Étudiant] as Etu
+  [Éditeur Monaco] as Monaco
+}
+
+package "Application Next.js" {
+  [Middleware d'authentification] as MW
+
+  package "Couche API" {
+    [API Authentification] as ApiAuth
+    [API Établissements et utilisateurs] as ApiUsers
+    [API Examens] as ApiExams
+    [API Session d'examen] as ApiSession
+    [API Résultats et exports] as ApiResults
+    [API Facturation] as ApiBilling
+    [API Super Admin] as ApiSA
+  }
+
+  package "Couche métier" {
+    [Service Authentification] as SvcAuth
+    [Service Établissement] as SvcEtab
+    [Service Utilisateurs] as SvcUsers
+    [Service Examens] as SvcExams
+    [Service Participation] as SvcPart
+    [Service Sandbox] as SvcSandbox
+    [Service Résultats] as SvcResults
+    [Service Facturation] as SvcBilling
+    [Service Super Admin] as SvcSA
+    [Validateurs Zod] as Zod
+  }
+
+  package "Accès aux données" {
+    [Repositories] as Repo
+    [Client Prisma] as Prisma
+    [Client Redis] as RedisClient
+  }
+
+  package "Workers" {
+    [Worker de correction] as WGrade
+    [Worker de statut d'examen] as WStatus
+  }
+}
+
+database "MySQL" as DB
+database "Redis" as Redis
+[Sandbox Docker Python] as Sandbox
+
+User --> Pub
+User --> SA
+User --> Adm
+User --> Prof
+User --> Etu
+Etu --> Monaco
+
+Pub --> MW
+SA --> MW
+Adm --> MW
+Prof --> MW
+Etu --> MW
+
+MW --> ApiAuth
+MW --> ApiUsers
+MW --> ApiExams
+MW --> ApiSession
+MW --> ApiResults
+MW --> ApiBilling
+MW --> ApiSA
+
+ApiAuth --> SvcAuth
+ApiUsers --> SvcEtab
+ApiUsers --> SvcUsers
+ApiExams --> SvcExams
+ApiSession --> SvcPart
+ApiSession --> SvcSandbox
+ApiResults --> SvcResults
+ApiBilling --> SvcBilling
+ApiSA --> SvcSA
+
+SvcAuth --> Zod
+SvcEtab --> Zod
+SvcUsers --> Zod
+SvcExams --> Zod
+SvcPart --> Zod
+SvcBilling --> Zod
+
+SvcAuth --> Repo
+SvcEtab --> Repo
+SvcUsers --> Repo
+SvcExams --> Repo
+SvcPart --> Repo
+SvcResults --> Repo
+SvcBilling --> Repo
+SvcSA --> Repo
+
+Repo --> Prisma
+Prisma --> DB
+
+SvcAuth --> RedisClient
+SvcPart --> RedisClient
+WStatus --> RedisClient
+RedisClient --> Redis
+
+SvcSandbox --> Sandbox
+WGrade --> SvcSandbox
+WGrade --> Repo
+WStatus --> Repo
+
+@enduml
