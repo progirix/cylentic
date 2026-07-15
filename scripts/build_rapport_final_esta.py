@@ -392,7 +392,7 @@ DIAGRAMMES_DIR = Path("/workspace/docs/diagrammes")
 
 
 def figure_slot(doc, title: str):
-    """Insère l'image UML si disponible, puis la légende numérotée."""
+    """Insère l'image UML si disponible, sinon un emplacement pour capture d'écran."""
     img_name = FIGURE_IMAGE_FILES.get(title)
     img_path = DIAGRAMMES_DIR / img_name if img_name else None
     para = doc.add_paragraph()
@@ -401,12 +401,13 @@ def figure_slot(doc, title: str):
     para.paragraph_format.line_spacing = 1.0
     if img_path and img_path.is_file():
         run = para.add_run()
-        # Largeur max ~14 cm pour rester dans les marges
         run.add_picture(str(img_path), width=Cm(14.0))
     else:
-        # Captures ch.4 ou fichiers absents : emplacement réservé
-        run = para.add_run("")
-        para.paragraph_format.space_after = Pt(24)
+        # Emplacement pour capture UI : zone blanche lisible avant la légende
+        para.paragraph_format.space_before = Pt(12)
+        para.paragraph_format.space_after = Pt(12)
+        run = para.add_run("[Insérer ici la capture d'écran correspondante]")
+        set_run_font(run, size=10, italic=True)
     add_caption(doc, "Figure", title, align="center")
 
 
@@ -500,8 +501,16 @@ FIGURES = [
     ("Séquence d'enregistrement d'un incident", "bm_fig_seq_inc"),
     ("Activité accès et salle d'attente", "bm_fig_act_a"),
     ("Activité composition et soumission", "bm_fig_act_b"),
+    ("Page de connexion multi rôles", "bm_fig_login"),
+    ("Espace administrateur d'établissement", "bm_fig_admin"),
+    ("Composition d'un examen côté professeur", "bm_fig_teach_edit"),
+    ("Publication et code d'accès d'examen", "bm_fig_teach_pub"),
+    ("Suivi live des participations", "bm_fig_teach_live"),
+    ("Résultats et exports professeur", "bm_fig_teach_res"),
+    ("Consignes et activation du plein écran", "bm_fig_stu_sec"),
     ("Salle d'attente avant le démarrage de l'examen", "bm_fig_wait"),
     ("Environnement de composition pendant l'épreuve", "bm_fig_compose"),
+    ("Page d'accueil Cylentic", "bm_fig_landing"),
 ]
 
 TABLES = [
@@ -1236,11 +1245,21 @@ def build():
     h(doc, "Annexe C : Captures d'écran complémentaires", 2)
     p(
         doc,
-        "Cette annexe regroupe les captures d'administration, de publication, de "
-        "journal d'incidents et d'exports au-delà des figures placées dans le corps "
-        "du rapport.",
+        "Le chapitre 4 prévoit déjà dix captures de l'interface Cylentic (connexion, "
+        "administration, parcours professeur, parcours étudiant et landing). Cette "
+        "annexe peut accueillir des vues supplémentaires si le jury le souhaite : "
+        "tableau de bord Super Admin, détail d'une copie corrigée, journal d'incidents "
+        "filtré, écran d'exclusion après sorties du plein écran, ou résultat d'un "
+        "import CSV avec rapport d'erreurs.",
         first_line=False,
     )
+    for title in [
+        "Tableau de bord Super Admin",
+        "Journal d'incidents d'une participation",
+        "Écran d'exclusion technique (plein écran)",
+        "Rapport d'erreurs d'import CSV",
+    ]:
+        figure_slot(doc, title)
     h(doc, "Annexe D : Modèle CSV d'import des étudiants", 2)
     p(
         doc,

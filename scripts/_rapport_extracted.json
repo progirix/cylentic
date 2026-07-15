@@ -714,6 +714,18 @@
     },
     {
       "type": "p",
+      "text": "[Emplacement de la figure 4.A]"
+    },
+    {
+      "type": "p",
+      "text": "Insérer la capture de la page de connexion (identifiant préfixé, mot de passe)."
+    },
+    {
+      "type": "p",
+      "text": "Figure 4.1 : Page de connexion multi rôles"
+    },
+    {
+      "type": "p",
       "text": "Un point sensible a été corrigé pendant la réalisation. Avec next start, l'environnement passe en production et le cookie était initialement marqué Secure. Or, en accès salle via une adresse HTTP locale, le navigateur refuse ce cookie. La connexion semblait alors échouer pour tous les profils. La solution livrée active Secure uniquement lorsque la requête est réellement en HTTPS, ou si FORCE_SECURE_COOKIES est explicitement forcé."
     },
     {
@@ -723,6 +735,18 @@
     {
       "type": "p",
       "text": "Après inscription, l'administrateur est guidé dans un onboarding : année académique, classes, premiers utilisateurs. Tant que ces étapes ne sont pas complètes, le tableau de bord peut rediriger vers le parcours d'installation. Les tableaux de bord présentent ensuite population, examens et activité. Les étudiants peuvent être créés manuellement ou importés par CSV, avec un rapport d'erreurs ligne à ligne. Les professeurs reçoivent un identifiant PROF-* et un mot de passe par défaut. Les administrateurs sont plafonnés à deux comptes actifs : on ne peut pas s'auto désactiver, et le système refuse de laisser l'établissement sans administrateur actif."
+    },
+    {
+      "type": "p",
+      "text": "[Emplacement de la figure 4.B]"
+    },
+    {
+      "type": "p",
+      "text": "Insérer la capture du tableau de bord administrateur (ou de l'onboarding)."
+    },
+    {
+      "type": "p",
+      "text": "Figure 4.2 : Espace administrateur d'établissement"
     },
     {
       "type": "p",
@@ -738,6 +762,54 @@
     },
     {
       "type": "p",
+      "text": "[Emplacement de la figure 4.C]"
+    },
+    {
+      "type": "p",
+      "text": "Insérer la capture de l'édition d'examen (exercices code / QCM)."
+    },
+    {
+      "type": "p",
+      "text": "Figure 4.3 : Composition d'un examen côté professeur"
+    },
+    {
+      "type": "p",
+      "text": "[Emplacement de la figure 4.D]"
+    },
+    {
+      "type": "p",
+      "text": "Insérer la capture de la publication (code d'accès ou mode présentation)."
+    },
+    {
+      "type": "p",
+      "text": "Figure 4.4 : Publication et code d'accès d'examen"
+    },
+    {
+      "type": "p",
+      "text": "[Emplacement de la figure 4.E]"
+    },
+    {
+      "type": "p",
+      "text": "Insérer la capture du suivi live pendant l'épreuve."
+    },
+    {
+      "type": "p",
+      "text": "Figure 4.5 : Suivi live des participations"
+    },
+    {
+      "type": "p",
+      "text": "[Emplacement de la figure 4.F]"
+    },
+    {
+      "type": "p",
+      "text": "Insérer la capture des résultats et des boutons d'export."
+    },
+    {
+      "type": "p",
+      "text": "Figure 4.6 : Résultats et exports professeur"
+    },
+    {
+      "type": "p",
       "text": "Plusieurs capacités ont étendu le MVP en cours de projet. Le planning peut être modifié sur un examen publié, avec synchronisation côté composition. Le contenu reste modifiable tant que la date de début n'est pas atteinte, via une règle partagée de verrouillage. La duplication crée un nouveau brouillon en reprenant la structure sans recopier les participations."
     },
     {
@@ -750,6 +822,18 @@
     },
     {
       "type": "p",
+      "text": "[Emplacement de la figure 4.G]"
+    },
+    {
+      "type": "p",
+      "text": "Insérer la capture de la page des consignes (demande de plein écran)."
+    },
+    {
+      "type": "p",
+      "text": "Figure 4.7 : Consignes et activation du plein écran"
+    },
+    {
+      "type": "p",
       "text": "[Emplacement de la figure 4.1]"
     },
     {
@@ -758,7 +842,7 @@
     },
     {
       "type": "p",
-      "text": "Figure 4.1 : Salle d'attente avant le démarrage de l'examen"
+      "text": "Figure 4.8 : Salle d'attente avant le démarrage de l'examen"
     },
     {
       "type": "p",
@@ -774,7 +858,7 @@
     },
     {
       "type": "p",
-      "text": "Figure 4.2 : Environnement de composition pendant l'épreuve"
+      "text": "Figure 4.9 : Environnement de composition pendant l'épreuve"
     },
     {
       "type": "p",
@@ -795,6 +879,18 @@
     {
       "type": "p",
       "text": "La landing présente le produit. Le formulaire de contact appelle une API dédiée, enregistre une notification de type landing.contact et rend cette demande consultable côté Super Admin."
+    },
+    {
+      "type": "p",
+      "text": "[Emplacement de la figure 4.H]"
+    },
+    {
+      "type": "p",
+      "text": "Insérer la capture de la page d'accueil et du formulaire de contact."
+    },
+    {
+      "type": "p",
+      "text": "Figure 4.10 : Page d'accueil Cylentic"
     },
     {
       "type": "h2",
