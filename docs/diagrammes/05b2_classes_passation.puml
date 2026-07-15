@@ -13,6 +13,13 @@ class User {
   id
   identifier
   role
+  email
+  firstName
+  lastName
+  passwordHash
+  mustChangePassword
+  isActive
+  lastLoginAt
 }
 
 class Exam {
