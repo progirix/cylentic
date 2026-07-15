@@ -3,6 +3,8 @@ left to right direction
 skinparam shadowing false
 skinparam packageStyle rectangle
 
+title Diagramme de cas d'utilisation : Super administrateur
+
 actor "Super administrateur" as SA
 
 rectangle "Cylentic" {
