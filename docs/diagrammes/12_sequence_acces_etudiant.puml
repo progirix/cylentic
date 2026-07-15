@@ -1,0 +1,54 @@
+@startuml
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+
+title Diagramme de séquence : Accès étudiant à un examen
+
+actor "Étudiant" as E
+participant "Interface de connexion" as Login
+participant "API d'authentification" as AuthAPI
+participant "Service d'authentification" as Auth
+participant "Page consignes de sécurité" as Sec
+participant "API session d'examen" as Sess
+participant "Service de participation" as Part
+database "MySQL" as DB
+
+E -> Login : saisit identifiant, mot de passe et code d'examen
+E -> Login : valide
+Login -> AuthAPI : demande de connexion
+AuthAPI -> Auth : authentifier
+
+Auth -> DB : rechercher le compte étudiant
+DB --> Auth : compte
+Auth -> Auth : vérifier le mot de passe
+Auth -> DB : rechercher l'examen par code d'accès
+DB --> Auth : examen
+
+alt code invalide, exclusion ou copie déjà soumise
+  Auth -> DB : enregistrer la tentative de code
+  Auth --> AuthAPI : refus
+  AuthAPI --> Login : erreur
+  Login --> E : afficher le message d'erreur
+else accès autorisé
+  Auth -> DB : enregistrer la tentative de code réussie
+  Auth -> Auth : générer le jeton de session
+  Auth --> AuthAPI : jeton et redirection vers les consignes
+  AuthAPI --> Login : succès et cookie de session
+  Login --> E : ouvrir les consignes de sécurité
+
+  E -> Sec : accepte les consignes
+  Sec -> Sec : activer le plein écran
+  Sec -> Sess : rejoindre l'examen
+  Sess -> Part : rejoindre
+
+  Part -> DB : vérifier l'examen et la classe autorisée
+  DB --> Part : examen
+  Part -> DB : créer ou mettre à jour la participation\n(statut connecté puis salle d'attente)
+  DB --> Part : participation
+  Part --> Sess : participation et résumé de l'examen
+  Sess --> Sec : succès
+  Sec --> E : rediriger vers la salle d'attente
+end
+
+@enduml

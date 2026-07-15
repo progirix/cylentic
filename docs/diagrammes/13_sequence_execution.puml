@@ -1,0 +1,31 @@
+@startuml
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+
+title Diagramme de séquence : Exécution du code étudiant
+
+actor "Étudiant" as E
+participant "Interface de composition" as UI
+participant "API session d'examen" as API
+participant "Service sandbox" as Sandbox
+participant "Conteneur sandbox Python" as Docker
+
+E -> UI : saisit ou modifie le code
+E -> UI : demande d'exécution
+UI -> API : exécuter le code
+API -> API : vérifier la session étudiant
+API -> Sandbox : exécuter le code Python
+
+alt exécution Docker disponible
+  Sandbox -> Docker : lancer un conteneur isolé
+  Docker --> Sandbox : sortie standard, erreurs, code de retour
+else repli local
+  Sandbox -> Sandbox : exécuter avec l'interpréteur Python local
+end
+
+Sandbox --> API : résultat d'exécution
+API --> UI : sortie, erreurs, durée
+UI --> E : afficher le résultat dans la console
+
+@enduml
