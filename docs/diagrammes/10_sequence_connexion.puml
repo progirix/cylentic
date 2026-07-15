@@ -1,0 +1,46 @@
+@startuml
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+
+title Diagramme de séquence : Connexion
+
+actor "Utilisateur" as U
+participant "Interface de connexion" as UI
+participant "API d'authentification" as API
+participant "Service d'authentification" as Auth
+database "MySQL" as DB
+
+U -> UI : saisit l'identifiant et le mot de passe
+U -> UI : valide le formulaire
+UI -> API : demande de connexion
+API -> Auth : authentifier
+
+Auth -> Auth : déduire le rôle à partir de l'identifiant
+Auth -> DB : compter les tentatives infructueuses récentes
+DB --> Auth : nombre de tentatives
+
+alt plafond de tentatives atteint
+  Auth --> API : refus (trop de tentatives)
+  API --> UI : erreur
+  UI --> U : afficher le message d'erreur
+else tentatives autorisées
+  Auth -> DB : rechercher le compte
+  DB --> Auth : compte
+
+  alt compte introuvable, inactif ou mot de passe incorrect
+    Auth -> DB : enregistrer une tentative infructueuse
+    Auth --> API : refus
+    API --> UI : erreur
+    UI --> U : afficher le message d'erreur
+  else authentification réussie
+    Auth -> DB : enregistrer une tentative réussie
+    Auth -> DB : mettre à jour la dernière connexion
+    Auth -> Auth : générer le jeton de session
+    Auth --> API : jeton, profil et URL de redirection
+    API --> UI : succès et cookie de session
+    UI --> U : rediriger vers l'espace du rôle
+  end
+end
+
+@enduml
