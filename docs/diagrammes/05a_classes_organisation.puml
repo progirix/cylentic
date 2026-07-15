@@ -30,6 +30,7 @@ class SubscriptionPlan {
   priceMin
   priceMax
   currency
+  features
   isActive
 }
 
@@ -44,10 +45,13 @@ class Establishment {
   officialEmail
   phone
   isActive
+  onboardingCompletedAt
 }
 
 class EstablishmentSubscription {
   id
+  establishmentId
+  planId
   status
   isSimulated
   trialEndsAt
@@ -57,6 +61,7 @@ class EstablishmentSubscription {
 
 class AcademicYear {
   id
+  establishmentId
   label
   startDate
   endDate
@@ -66,6 +71,7 @@ class AcademicYear {
 
 class Class {
   id
+  establishmentId
   name
   track
   level
@@ -74,6 +80,7 @@ class Class {
 
 class User {
   id
+  establishmentId
   identifier
   role
   email
@@ -86,23 +93,33 @@ class User {
 }
 
 class AdminProfile {
+  userId
   function
 }
 
 class TeacherProfile {
+  userId
   subjects
   function
 }
 
 class StudentProfile {
+  userId
   matricule
+  classId
+  academicYearId
 }
 
 class AdminActivityLog {
   id
+  establishmentId
+  actorUserId
   action
   entityType
   entityId
+  oldValue
+  newValue
+  ipAddress
   createdAt
 }
 
