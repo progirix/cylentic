@@ -1,5 +1,5 @@
 @startuml
-left to right direction
+top to bottom direction
 skinparam shadowing false
 skinparam packageStyle rectangle
 
@@ -14,37 +14,22 @@ rectangle "Cylentic" {
     usecase "Changer son mot de passe" as UC2
   }
 
-  package "Inscription" {
+  package "Inscription et configuration" {
     usecase "Créer un établissement" as UC3
-  }
-
-  package "Configuration initiale" {
     usecase "Compléter la configuration initiale" as UC4
   }
 
-  package "Vue d'ensemble" {
+  package "Pilotage" {
     usecase "Consulter le tableau de bord" as UC5
-    usecase "Consulter les statistiques" as UC6
+    usecase "Consulter le journal d'activité" as UC6
+    usecase "Gérer l'abonnement" as UC7
   }
 
-  package "Gestion du référentiel" {
-    usecase "Créer une année académique" as UC7
-    usecase "Consulter les années académiques" as UC8
-    usecase "Créer une classe" as UC9
-    usecase "Consulter les classes" as UC10
-  }
-
-  package "Gestion des utilisateurs" {
-    usecase "Créer un étudiant" as UC11
-    usecase "Consulter les étudiants" as UC12
-    usecase "Créer un professeur" as UC13
-    usecase "Consulter les professeurs" as UC14
-  }
-
-  package "Exploitation" {
-    usecase "Consulter le journal d'activité" as UC15
-    usecase "Consulter l'abonnement" as UC16
-    usecase "Changer de plan tarifaire" as UC17
+  package "Référentiel et comptes" {
+    usecase "Gérer les années académiques" as UC8
+    usecase "Gérer les classes" as UC9
+    usecase "Gérer les étudiants" as UC10
+    usecase "Gérer les professeurs" as UC11
   }
 }
 
@@ -59,17 +44,9 @@ Admin --> UC8
 Admin --> UC9
 Admin --> UC10
 Admin --> UC11
-Admin --> UC12
-Admin --> UC13
-Admin --> UC14
-Admin --> UC15
-Admin --> UC16
-Admin --> UC17
 
-UC5 ..> UC6 : <<include>>
-UC17 ..> UC16 : <<include>>
-UC4 ..> UC7 : <<include>>
+UC4 ..> UC8 : <<include>>
 UC4 ..> UC9 : <<include>>
-UC4 ..> UC13 : <<include>>
+UC4 ..> UC11 : <<include>>
 
 @enduml
