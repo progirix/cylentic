@@ -1,0 +1,158 @@
+@startuml
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+hide empty methods
+hide circle
+
+title Diagramme de classes : Examens, soumissions et incidents
+
+class Establishment {
+  id
+  name
+  acronym
+}
+
+class User {
+  id
+  identifier
+  role
+}
+
+class Class {
+  id
+  name
+}
+
+class Exam {
+  id
+  name
+  status
+  startAt
+  durationMinutes
+  accessDelayMinutes
+  correctionMode
+  accessCode
+  maxIncidentsBeforeClose
+  publishedAt
+  startedAt
+  endedAt
+}
+
+class ExamClass {
+}
+
+class Exercise {
+  id
+  type
+  title
+  statement
+  language
+  points
+  correctionMode
+  orderIndex
+}
+
+class UnitTest {
+  id
+  input
+  expectedOutput
+  weight
+  isHidden
+  orderIndex
+}
+
+class QcmQuestion {
+  id
+  text
+  answerType
+  points
+  explanation
+  orderIndex
+}
+
+class QcmChoice {
+  id
+  text
+  isCorrect
+  orderIndex
+}
+
+class ExamParticipation {
+  id
+  status
+  isCompleted
+  connectedAt
+  ipAddress
+  waitingRoomEnteredAt
+  startedAt
+  submittedAt
+  submissionReason
+  autoScore
+  manualScore
+  finalScore
+}
+
+class Submission {
+  id
+  sourceCode
+  language
+  autoScore
+  manualScore
+  finalScore
+  comment
+  submittedAt
+}
+
+class SubmissionTestResult {
+  id
+  passed
+  actualOutput
+  stderr
+  status
+  timeMs
+  memoryKb
+}
+
+class QcmAnswer {
+  id
+}
+
+class CodeAutosave {
+  id
+  content
+  savedAt
+}
+
+class Incident {
+  id
+  type
+  occurredAt
+  durationSeconds
+  payload
+}
+
+Establishment "1" -- "0..*" Exam
+User "1" -- "0..*" Exam : crée
+Exam "1" -- "0..*" ExamClass
+Class "1" -- "0..*" ExamClass
+Exam "1" -- "0..*" Exercise
+Exam "1" -- "0..*" ExamParticipation
+User "1" -- "0..*" ExamParticipation : compose
+
+Exercise "1" -- "0..*" UnitTest
+Exercise "1" -- "0..*" QcmQuestion
+QcmQuestion "1" -- "0..*" QcmChoice
+
+ExamParticipation "1" -- "0..*" Submission
+Exercise "1" -- "0..*" Submission
+ExamParticipation "1" -- "0..*" CodeAutosave
+Exercise "1" -- "0..*" CodeAutosave
+ExamParticipation "1" -- "0..*" Incident
+
+Submission "1" -- "0..*" SubmissionTestResult
+UnitTest "1" -- "0..*" SubmissionTestResult
+Submission "1" -- "0..*" QcmAnswer
+QcmQuestion "1" -- "0..*" QcmAnswer
+QcmChoice "1" -- "0..*" QcmAnswer
+
+@enduml

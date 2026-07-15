@@ -1,0 +1,121 @@
+@startuml
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+hide empty methods
+hide circle
+
+title Diagramme de classes : Organisation et comptes
+
+class PlatformAdmin {
+  id
+  identifier
+  email
+  firstName
+  lastName
+  passwordHash
+  isActive
+  lastLoginAt
+}
+
+class SubscriptionPlan {
+  id
+  code
+  name
+  maxTeachers
+  maxStudents
+  maxExamsPerMonth
+  priceMin
+  priceMax
+  currency
+  isActive
+}
+
+class Establishment {
+  id
+  name
+  acronym
+  type
+  country
+  city
+  timezone
+  officialEmail
+  phone
+  isActive
+}
+
+class EstablishmentSubscription {
+  id
+  status
+  isSimulated
+  trialEndsAt
+  startedAt
+  currentPeriodEnd
+}
+
+class AcademicYear {
+  id
+  label
+  startDate
+  endDate
+  isActive
+  isArchived
+}
+
+class Class {
+  id
+  name
+  track
+  level
+  isArchived
+}
+
+class User {
+  id
+  identifier
+  role
+  email
+  firstName
+  lastName
+  passwordHash
+  mustChangePassword
+  isActive
+  lastLoginAt
+}
+
+class AdminProfile {
+  function
+}
+
+class TeacherProfile {
+  subjects
+  function
+}
+
+class StudentProfile {
+  matricule
+}
+
+class AdminActivityLog {
+  id
+  action
+  entityType
+  entityId
+  createdAt
+}
+
+SubscriptionPlan "1" -- "0..*" EstablishmentSubscription
+Establishment "1" -- "0..*" EstablishmentSubscription
+Establishment "1" -- "0..*" AcademicYear
+Establishment "1" -- "0..*" Class
+Establishment "1" -- "0..*" User
+Establishment "1" -- "0..*" AdminActivityLog
+
+User "1" -- "0..1" AdminProfile
+User "1" -- "0..1" TeacherProfile
+User "1" -- "0..1" StudentProfile
+User "0..1" -- "0..*" AdminActivityLog
+
+Class "1" -- "0..*" StudentProfile
+AcademicYear "1" -- "0..*" StudentProfile
+
+@enduml
