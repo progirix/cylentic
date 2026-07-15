@@ -44,7 +44,5 @@ Etu --> UC11
 
 UC5 ..> UC3 : <<include>>
 UC5 ..> UC4 : <<include>>
-UC8 ..> UC7 : <<include>>
-UC10 ..> UC11 : <<include>>
 
 @enduml
