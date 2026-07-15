@@ -225,14 +225,92 @@ def toc_line(doc, title: str, bookmark: str, indent=0):
     return para
 
 
+def add_toc_field(paragraph, instruction: str):
+    """Insère un champ TOC Word ; à mettre à jour par clic droit dans Word."""
+    run = paragraph.add_run()
+    r = run._r
+    fc1 = OxmlElement("w:fldChar")
+    fc1.set(qn("w:fldCharType"), "begin")
+    it = OxmlElement("w:instrText")
+    it.set(qn("xml:space"), "preserve")
+    it.text = instruction
+    fc2 = OxmlElement("w:fldChar")
+    fc2.set(qn("w:fldCharType"), "separate")
+    t = OxmlElement("w:t")
+    t.text = "(Cliquez droit > Mettre à jour les champs dans Word)"
+    fc3 = OxmlElement("w:fldChar")
+    fc3.set(qn("w:fldCharType"), "end")
+    r.append(fc1)
+    r.append(it)
+    r.append(fc2)
+    r.append(t)
+    r.append(fc3)
+    set_run_font(run, size=12, italic=True)
+
+
+def add_caption(doc, kind: str, title: str):
+    """Légende avec champ SEQ pour alimenter les listes de figures / tableaux."""
+    para = doc.add_paragraph()
+    para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    para.paragraph_format.space_after = Pt(10)
+    para.paragraph_format.line_spacing = 1.5
+    run1 = para.add_run(f"{kind} ")
+    set_run_font(run1, size=11)
+    run = para.add_run()
+    r = run._r
+    fc1 = OxmlElement("w:fldChar")
+    fc1.set(qn("w:fldCharType"), "begin")
+    it = OxmlElement("w:instrText")
+    it.set(qn("xml:space"), "preserve")
+    it.text = f"SEQ {kind} \\* ARABIC"
+    fc2 = OxmlElement("w:fldChar")
+    fc2.set(qn("w:fldCharType"), "separate")
+    t = OxmlElement("w:t")
+    t.text = "1"
+    fc3 = OxmlElement("w:fldChar")
+    fc3.set(qn("w:fldCharType"), "end")
+    r.append(fc1)
+    r.append(it)
+    r.append(fc2)
+    r.append(t)
+    r.append(fc3)
+    set_run_font(run, size=11)
+    run2 = para.add_run(f" : {title}")
+    set_run_font(run2, size=11)
+    return para
+
+
 def figure_slot(doc, title: str):
     # Légende seule : l'image sera insérée juste au-dessus dans Word.
     p(doc, "", first_line=False, space_after=24)
-    p(doc, f"Figure : {title}", size=11, align="center", first_line=False, space_after=10)
+    add_caption(doc, "Figure", title)
 
 
 def add_table_with_title(doc, title: str, rows: list[list[str]], source: str):
-    p(doc, f"Tableau : {title}", size=11, bold=True, align="left", first_line=False, space_after=4)
+    tp = p(doc, "", align="left", first_line=False, space_after=4)
+    run1 = tp.add_run("Tableau ")
+    set_run_font(run1, size=11, bold=True)
+    run = tp.add_run()
+    r = run._r
+    fc1 = OxmlElement("w:fldChar")
+    fc1.set(qn("w:fldCharType"), "begin")
+    it = OxmlElement("w:instrText")
+    it.set(qn("xml:space"), "preserve")
+    it.text = "SEQ Tableau \\* ARABIC"
+    fc2 = OxmlElement("w:fldChar")
+    fc2.set(qn("w:fldCharType"), "separate")
+    t = OxmlElement("w:t")
+    t.text = "1"
+    fc3 = OxmlElement("w:fldChar")
+    fc3.set(qn("w:fldCharType"), "end")
+    r.append(fc1)
+    r.append(it)
+    r.append(fc2)
+    r.append(t)
+    r.append(fc3)
+    set_run_font(run, size=11, bold=True)
+    run2 = tp.add_run(f" : {title}")
+    set_run_font(run2, size=11, bold=True)
     table = doc.add_table(rows=len(rows), cols=len(rows[0]))
     table.style = "Table Grid"
     for i, row in enumerate(rows):
@@ -498,11 +576,20 @@ def build():
         "ce travail n'aurait pas abouti dans les délais impartis.",
     )
 
-    # ===== SOMMAIRE =====
+    # ===== SOMMAIRE (grands titres seulement) =====
     page_break(doc)
     h(doc, "Sommaire", 1, "bm_sommaire")
-    for title, bm in SOMMAIRE:
-        toc_line(doc, title, bm, indent=0)
+    p(
+        doc,
+        "Le sommaire ci-dessous reprend les grands titres. Mettez à jour le champ "
+        "dans Word (clic droit > Mettre à jour les champs) pour afficher les numéros "
+        "de pages et activer les liens.",
+        italic=True,
+        first_line=False,
+        size=11,
+    )
+    toc_p = p(doc, "", first_line=False, align="left")
+    add_toc_field(toc_p, r'TOC \o "1-1" \h \z \u')
 
     # ===== SIGLES =====
     page_break(doc)
@@ -531,17 +618,32 @@ def build():
     for s, dfn in sigles:
         p(doc, f"{s} : {dfn}", align="left", first_line=False, space_after=3)
 
-    # ===== LISTE FIGURES =====
+    # ===== LISTE FIGURES / TABLEAUX (champs Word) =====
     page_break(doc)
     h(doc, "Liste des figures", 1, "bm_liste_figures")
-    for i, (title, _) in enumerate(FIGURES, 1):
-        p(doc, f"Figure {i} : {title}", align="left", first_line=False, space_after=2)
+    p(
+        doc,
+        "Liste générée automatiquement à partir des légendes. Dans Word : clic droit "
+        "sur le champ > Mettre à jour les champs.",
+        italic=True,
+        first_line=False,
+        size=11,
+    )
+    fp = p(doc, "", first_line=False, align="left")
+    add_toc_field(fp, r'TOC \h \z \c "Figure"')
 
-    # ===== LISTE TABLEAUX =====
     page_break(doc)
     h(doc, "Liste des tableaux", 1, "bm_liste_tableaux")
-    for i, title in enumerate(TABLES, 1):
-        p(doc, f"Tableau {i} : {title}", align="left", first_line=False, space_after=2)
+    p(
+        doc,
+        "Liste générée automatiquement à partir des titres de tableaux. Dans Word : "
+        "clic droit > Mettre à jour les champs.",
+        italic=True,
+        first_line=False,
+        size=11,
+    )
+    tp = p(doc, "", first_line=False, align="left")
+    add_toc_field(tp, r'TOC \h \z \c "Tableau"')
 
     # ===== RESUME =====
     page_break(doc)
@@ -959,24 +1061,24 @@ def build():
     page_break(doc)
     h(doc, "Bibliographie et webographie", 1, "bm_biblio")
     refs = [
-        ("[1] Object Management Group, OMG Unified Modeling Language (OMG UML), documentation officielle. ", None),
-        ("[2] Vercel, Next.js Documentation, ", "https://nextjs.org/docs"),
-        ("[3] Prisma, Prisma Documentation, ", "https://www.prisma.io/docs"),
-        ("[4] Oracle, MySQL 8 Documentation, ", "https://dev.mysql.com/doc/"),
-        ("[5] Redis Ltd, Redis Documentation, ", "https://redis.io/docs/"),
-        ("[6] Docker Inc., Docker Documentation, ", "https://docs.docker.com/"),
-        ("[7] ESTA, Guide du stagiaire Master/Ingénieur, année académique 2024-2025.", None),
-        ("[8] freeCodeCamp, ", "https://www.freecodecamp.org/"),
-        ("[9] Moodle HQ, Moodle Documentation, ", "https://docs.moodle.org/"),
-        ("[10] Judge0, Judge0 CE, ", "https://judge0.com/"),
+        ("[1] Object Management Group, OMG Unified Modeling Language (OMG UML), documentation officielle. ", None, None),
+        ("[2] Vercel, Next.js Documentation, ", "https://nextjs.org/docs", "09h20"),
+        ("[3] Prisma, Prisma Documentation, ", "https://www.prisma.io/docs", "09h45"),
+        ("[4] Oracle, MySQL 8 Documentation, ", "https://dev.mysql.com/doc/", "10h15"),
+        ("[5] Redis Ltd, Redis Documentation, ", "https://redis.io/docs/", "10h40"),
+        ("[6] Docker Inc., Docker Documentation, ", "https://docs.docker.com/", "11h25"),
+        ("[7] ESTA, Guide du stagiaire Master/Ingénieur, année académique 2024-2025.", None, None),
+        ("[8] freeCodeCamp, ", "https://www.freecodecamp.org/", "14h10"),
+        ("[9] Moodle HQ, Moodle Documentation, ", "https://docs.moodle.org/", "15h05"),
+        ("[10] Judge0, Judge0 CE, ", "https://judge0.com/", "16h30"),
     ]
-    for prefix, url in refs:
+    for prefix, url, heure in refs:
         para = p(doc, "", align="left", first_line=False, space_after=6)
         run = para.add_run(prefix)
         set_run_font(run, size=12)
         if url:
             add_external_hyperlink(para, url, url)
-            run2 = para.add_run(", consulté le 15/07/2026 à 12h.")
+            run2 = para.add_run(f", consulté le 15/07/2026 à {heure}.")
             set_run_font(run2, size=12)
 
     # ANNEXES
@@ -1013,30 +1115,28 @@ def build():
         first_line=False,
     )
 
-    # TABLE DES MATIERES (fin)
+    # TABLE DES MATIERES (fin, ESTA)
     page_break(doc)
     h(doc, "Table des matières", 1, "bm_tdm")
-    for title, bm, indent in TDM:
-        toc_line(doc, title, bm, indent=indent)
+    p(
+        doc,
+        "Table complète des titres et sous-titres. Dans Word : sélectionner le champ, "
+        "clic droit, Mettre à jour les champs, choisir Mettre à jour toute la table. "
+        "Les entrées deviennent cliquables.",
+        italic=True,
+        first_line=False,
+        size=11,
+    )
+    tdm = p(doc, "", first_line=False, align="left")
+    add_toc_field(tdm, r'TOC \o "1-3" \h \z \u')
 
-    # Final hygiene pass: remove residual instruction sentences
-    forbidden = [
-        "Mettre à jour les champs",
-        "Cliquez droit",
-        "clic droit",
-        "Dans Word",
-        "[LOGO",
-        "Nom de l'établissement",
-        "à coller",
-        "Texte à personnaliser",
-    ]
+    # Hygiene : retirer seulement les placeholders de couverture / texte à coller
+    forbidden_clear = ["[LOGO", "à coller", "Texte à personnaliser", "Nom de l'établissement"]
     for para in doc.paragraphs:
         t = para.text
-        if any(f in t for f in forbidden):
-            # clear paragraph content if instructional
-            if any(f in t for f in ["Mettre à jour", "Cliquez", "clic droit", "Dans Word", "à coller", "personnaliser"]):
-                for r in list(para.runs):
-                    r.text = ""
+        if any(f in t for f in forbidden_clear):
+            for r in list(para.runs):
+                r.text = ""
 
     doc.save(OUT)
     doc.save(ALSO)
@@ -1045,8 +1145,11 @@ def build():
     # verify
     d2 = Document(str(OUT))
     full = "\n".join(p.text for p in d2.paragraphs)
-    assert "Cliquez droit" not in full
-    assert "Mettre à jour les champs" not in full
+    assert "Mettre à jour les champs" in full
+    assert "Cliquez droit" in full
+    assert "à 09h20" in full
+    assert "à 16h30" in full
+    assert "à 12h." not in full
     assert "Mots clés" not in full
     assert "Méthodologie" not in full
     assert "État de l'art" not in full
