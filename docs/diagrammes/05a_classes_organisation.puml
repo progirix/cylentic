@@ -118,4 +118,6 @@ User "0..1" -- "0..*" AdminActivityLog
 Class "1" -- "0..*" StudentProfile
 AcademicYear "1" -- "0..*" StudentProfile
 
+PlatformAdmin "1" -- "0..*" Establishment : administre
+
 @enduml
