@@ -73,24 +73,44 @@ def setup_margins(section):
     section.bottom_margin = Cm(2.5)
 
 
-def add_page_number(section, roman=False):
-    section.footer.is_linked_to_previous = False
-    p = section.footer.paragraphs[0]
-    p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-    for r in list(p.runs):
+def set_page_number_format(section, *, fmt: str, start: int | None = None):
+    """
+    Définit le format réel de pagination de la section (utilisé par le TOC).
+    fmt: lowerRoman | decimal | none
+    """
+    sectPr = section._sectPr
+    pg = sectPr.find(qn("w:pgNumType"))
+    if pg is None:
+        pg = OxmlElement("w:pgNumType")
+        sectPr.append(pg)
+    pg.set(qn("w:fmt"), fmt)
+    if start is not None:
+        pg.set(qn("w:start"), str(start))
+    else:
+        if qn("w:start") in pg.attrib:
+            del pg.attrib[qn("w:start")]
+
+
+def _clear_paragraph(paragraph):
+    for r in list(paragraph.runs):
         r._element.getparent().remove(r._element)
 
-    run = p.add_run()
+
+def _add_page_field(paragraph, placeholder: str = "1"):
+    paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    _clear_paragraph(paragraph)
+    run = paragraph.add_run()
     r = run._r
     fc1 = OxmlElement("w:fldChar")
     fc1.set(qn("w:fldCharType"), "begin")
     it = OxmlElement("w:instrText")
     it.set(qn("xml:space"), "preserve")
-    it.text = r"PAGE \* ROMAN" if roman else "PAGE"
+    # Pas de \* ROMAN ici : le format vient de w:pgNumType (indispensable pour le TOC).
+    it.text = "PAGE"
     fc2 = OxmlElement("w:fldChar")
     fc2.set(qn("w:fldCharType"), "separate")
     t = OxmlElement("w:t")
-    t.text = "i" if roman else "1"
+    t.text = placeholder
     fc3 = OxmlElement("w:fldChar")
     fc3.set(qn("w:fldCharType"), "end")
     r.append(fc1)
@@ -99,6 +119,43 @@ def add_page_number(section, roman=False):
     r.append(t)
     r.append(fc3)
     set_run_font(run, size=12)
+
+
+def add_page_number(section, *, roman=False, start=1, hide_first_page=False):
+    """
+    Pagination de section. roman=True -> i, ii, iii (préliminaire).
+    hide_first_page=True -> page de garde sans numéro (pied de première page vide).
+    """
+    set_page_number_format(
+        section,
+        fmt="lowerRoman" if roman else "decimal",
+        start=start,
+    )
+    section.footer.is_linked_to_previous = False
+    _add_page_field(
+        section.footer.paragraphs[0],
+        placeholder="i" if roman else "1",
+    )
+    if hide_first_page:
+        section.different_first_page_header_footer = True
+        fp = section.first_page_footer
+        fp.is_linked_to_previous = False
+        if not fp.paragraphs:
+            fp.add_paragraph()
+        _clear_paragraph(fp.paragraphs[0])
+    else:
+        section.different_first_page_header_footer = False
+
+
+# Compteurs globaux pour numéros visibles (indépendants du cache SEQ Word)
+_FIG_N = 0
+_TAB_N = 0
+
+
+def reset_caption_counters():
+    global _FIG_N, _TAB_N
+    _FIG_N = 0
+    _TAB_N = 0
 
 
 def bookmark_heading(paragraph: Paragraph, name: str):
@@ -248,14 +305,36 @@ def add_toc_field(paragraph, instruction: str):
     set_run_font(run, size=12, italic=True)
 
 
-def add_caption(doc, kind: str, title: str):
-    """Légende avec champ SEQ pour alimenter les listes de figures / tableaux."""
+def _next_caption_number(kind: str) -> int:
+    global _FIG_N, _TAB_N
+    if kind == "Figure":
+        _FIG_N += 1
+        return _FIG_N
+    _TAB_N += 1
+    return _TAB_N
+
+
+def add_caption(doc, kind: str, title: str, *, align="center", bold=False):
+    """
+    Légende numérotée (Figure N / Tableau N) avec SEQ Word.
+    Le numéro visible est posé explicitement pour éviter que tout reste à « 1 »
+    avant / sans mise à jour des champs.
+    """
+    n = _next_caption_number(kind)
     para = doc.add_paragraph()
-    para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    if align == "center":
+        para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    else:
+        para.alignment = WD_ALIGN_PARAGRAPH.LEFT
     para.paragraph_format.space_after = Pt(10)
     para.paragraph_format.line_spacing = 1.5
+    # Style Caption aide le TOC \c "Figure" / \c "Tableau"
+    try:
+        para.style = doc.styles["Caption"]
+    except KeyError:
+        pass
     run1 = para.add_run(f"{kind} ")
-    set_run_font(run1, size=11)
+    set_run_font(run1, size=11, bold=bold)
     run = para.add_run()
     r = run._r
     fc1 = OxmlElement("w:fldChar")
@@ -266,7 +345,7 @@ def add_caption(doc, kind: str, title: str):
     fc2 = OxmlElement("w:fldChar")
     fc2.set(qn("w:fldCharType"), "separate")
     t = OxmlElement("w:t")
-    t.text = "1"
+    t.text = str(n)
     fc3 = OxmlElement("w:fldChar")
     fc3.set(qn("w:fldCharType"), "end")
     r.append(fc1)
@@ -274,43 +353,20 @@ def add_caption(doc, kind: str, title: str):
     r.append(fc2)
     r.append(t)
     r.append(fc3)
-    set_run_font(run, size=11)
+    set_run_font(run, size=11, bold=bold)
     run2 = para.add_run(f" : {title}")
-    set_run_font(run2, size=11)
-    return para
+    set_run_font(run2, size=11, bold=bold)
+    return para, n
 
 
 def figure_slot(doc, title: str):
     # Légende seule : l'image sera insérée juste au-dessus dans Word.
     p(doc, "", first_line=False, space_after=24)
-    add_caption(doc, "Figure", title)
+    add_caption(doc, "Figure", title, align="center")
 
 
 def add_table_with_title(doc, title: str, rows: list[list[str]], source: str):
-    tp = p(doc, "", align="left", first_line=False, space_after=4)
-    run1 = tp.add_run("Tableau ")
-    set_run_font(run1, size=11, bold=True)
-    run = tp.add_run()
-    r = run._r
-    fc1 = OxmlElement("w:fldChar")
-    fc1.set(qn("w:fldCharType"), "begin")
-    it = OxmlElement("w:instrText")
-    it.set(qn("xml:space"), "preserve")
-    it.text = "SEQ Tableau \\* ARABIC"
-    fc2 = OxmlElement("w:fldChar")
-    fc2.set(qn("w:fldCharType"), "separate")
-    t = OxmlElement("w:t")
-    t.text = "1"
-    fc3 = OxmlElement("w:fldChar")
-    fc3.set(qn("w:fldCharType"), "end")
-    r.append(fc1)
-    r.append(it)
-    r.append(fc2)
-    r.append(t)
-    r.append(fc3)
-    set_run_font(run, size=11, bold=True)
-    run2 = tp.add_run(f" : {title}")
-    set_run_font(run2, size=11, bold=True)
+    add_caption(doc, "Tableau", title, align="left", bold=True)
     table = doc.add_table(rows=len(rows), cols=len(rows[0]))
     table.style = "Table Grid"
     for i, row in enumerate(rows):
@@ -529,12 +585,17 @@ def replay_chapter(doc, blocks, *, chapter_bookmark_map=None, skip_prefixes=None
 def build():
     data = json.loads(EXTRACTED.read_text(encoding="utf-8"))
     tables = data["tables"]
+    reset_caption_counters()
 
     doc = Document()
     configure_styles(doc)
+
+    # ===== Section 0 : pages de garde (sans numéro) =====
     setup_margins(doc.sections[0])
-    add_page_number(doc.sections[0], roman=True)
-    doc.sections[0].different_first_page_header_footer = True
+    set_page_number_format(doc.sections[0], fmt="lowerRoman", start=1)
+    doc.sections[0].different_first_page_header_footer = False
+    doc.sections[0].footer.is_linked_to_previous = False
+    _clear_paragraph(doc.sections[0].footer.paragraphs[0])
 
     # ===== GARDE =====
     cover_block(doc)
@@ -543,8 +604,12 @@ def build():
     page_break(doc)
     cover_block(doc)
 
+    # ===== Section 1 : préliminaire (romains i, ii, iii…) =====
+    front = doc.add_section()
+    setup_margins(front)
+    add_page_number(front, roman=True, start=1, hide_first_page=False)
+
     # ===== DEDICACE =====
-    page_break(doc)
     h(doc, "Dédicace", 1, "bm_dedicace")
     p(
         doc,
@@ -583,7 +648,9 @@ def build():
         doc,
         "Le sommaire ci-dessous reprend les grands titres. Mettez à jour le champ "
         "dans Word (clic droit > Mettre à jour les champs) pour afficher les numéros "
-        "de pages et activer les liens.",
+        "de pages et activer les liens. Les pages préliminaires apparaissent en "
+        "chiffres romains (i, ii, iii…) ; le corps du rapport en chiffres arabes "
+        "(1, 2, 3…).",
         italic=True,
         first_line=False,
         size=11,
@@ -690,14 +757,10 @@ def build():
         "results of the platform.",
     )
 
-    # ===== BODY SECTION (arabic) =====
+    # ===== BODY SECTION (arabe 1, 2, 3…) =====
     new_sec = doc.add_section()
     setup_margins(new_sec)
-    add_page_number(new_sec, roman=False)
-    sectPr = new_sec._sectPr
-    pgNumType = OxmlElement("w:pgNumType")
-    pgNumType.set(qn("w:start"), "1")
-    sectPr.append(pgNumType)
+    add_page_number(new_sec, roman=False, start=1, hide_first_page=False)
 
     h(doc, "Introduction générale", 1, "bm_intro")
     p(
@@ -933,8 +996,34 @@ def build():
         title_p = OxmlElement("w:p")
         anchor._p.addnext(title_p)
         tp = P(title_p, anchor._parent)
-        rr = tp.add_run(f"Tableau : {title}")
-        set_run_font(rr, size=11, bold=True)
+        n = _next_caption_number("Tableau")
+        try:
+            tp.style = doc.styles["Caption"]
+        except KeyError:
+            pass
+        run1 = tp.add_run("Tableau ")
+        set_run_font(run1, size=11, bold=True)
+        run = tp.add_run()
+        r = run._r
+        fc1 = OxmlElement("w:fldChar")
+        fc1.set(qn("w:fldCharType"), "begin")
+        it = OxmlElement("w:instrText")
+        it.set(qn("xml:space"), "preserve")
+        it.text = "SEQ Tableau \\* ARABIC"
+        fc2 = OxmlElement("w:fldChar")
+        fc2.set(qn("w:fldCharType"), "separate")
+        tnode = OxmlElement("w:t")
+        tnode.text = str(n)
+        fc3 = OxmlElement("w:fldChar")
+        fc3.set(qn("w:fldCharType"), "end")
+        r.append(fc1)
+        r.append(it)
+        r.append(fc2)
+        r.append(tnode)
+        r.append(fc3)
+        set_run_font(run, size=11, bold=True)
+        run2 = tp.add_run(f" : {title}")
+        set_run_font(run2, size=11, bold=True)
 
         table = doc.add_table(rows=len(rows), cols=len(rows[0]))
         table.style = "Table Grid"
@@ -1122,7 +1211,8 @@ def build():
         doc,
         "Table complète des titres et sous-titres. Dans Word : sélectionner le champ, "
         "clic droit, Mettre à jour les champs, choisir Mettre à jour toute la table. "
-        "Les entrées deviennent cliquables.",
+        "Les entrées deviennent cliquables. Les pages préliminaires restent en "
+        "chiffres romains ; le corps en chiffres arabes.",
         italic=True,
         first_line=False,
         size=11,
@@ -1146,15 +1236,35 @@ def build():
     d2 = Document(str(OUT))
     full = "\n".join(p.text for p in d2.paragraphs)
     assert "Mettre à jour les champs" in full
-    assert "Cliquez droit" in full
+    assert "chiffres romains" in full
     assert "à 09h20" in full
     assert "à 16h30" in full
     assert "à 12h." not in full
+    # Figures and tables numbered consecutively
+    figs = [p.text for p in d2.paragraphs if p.text.strip().startswith("Figure ")]
+    tabs = [p.text for p in d2.paragraphs if p.text.strip().startswith("Tableau ")]
+    assert figs and all(f"Figure {i} :" in figs[i - 1] for i in range(1, len(figs) + 1)), figs[:5]
+    assert len(tabs) >= 3 and all("Tableau :" not in t.replace("Tableau 1 :", "X").replace("Tableau 2 :", "X").replace("Tableau 3 :", "X") for t in tabs)
+    assert any("Tableau 1 :" in t for t in tabs)
+    assert any("Tableau 2 :" in t for t in tabs)
+    assert any("Tableau 3 :" in t for t in tabs)
+    # Page format on sections
+    from docx.oxml.ns import qn as _qn
+    assert len(d2.sections) >= 3
+    fmts = []
+    for s in d2.sections:
+        pg = s._sectPr.find(_qn("w:pgNumType"))
+        fmts.append(None if pg is None else pg.get(_qn("w:fmt")))
+    assert "lowerRoman" in fmts
+    assert "decimal" in fmts
     assert "Mots clés" not in full
     assert "Méthodologie" not in full
     assert "État de l'art" not in full
     assert "Problématique" in full
     assert ECOLE in full
+    print("figures", len(figs), "first/last", figs[0][:60], "|", figs[-1][:60])
+    print("tableaux", tabs)
+    print("page fmts", fmts)
     print("intro headings", sum(1 for para in d2.paragraphs if para.style and para.style.name=="Heading 1" and para.text.strip()=="Introduction générale"))
     print("checks OK, size", OUT.stat().st_size)
 
