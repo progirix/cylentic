@@ -294,7 +294,7 @@ def add_toc_field(paragraph, instruction: str):
     fc2 = OxmlElement("w:fldChar")
     fc2.set(qn("w:fldCharType"), "separate")
     t = OxmlElement("w:t")
-    t.text = "(Cliquez droit > Mettre à jour les champs dans Word)"
+    t.text = " "
     fc3 = OxmlElement("w:fldChar")
     fc3.set(qn("w:fldCharType"), "end")
     r.append(fc1)
@@ -406,8 +406,7 @@ def figure_slot(doc, title: str):
         # Emplacement pour capture UI : zone blanche lisible avant la légende
         para.paragraph_format.space_before = Pt(12)
         para.paragraph_format.space_after = Pt(12)
-        run = para.add_run("[Insérer ici la capture d'écran correspondante]")
-        set_run_font(run, size=10, italic=True)
+        para.paragraph_format.space_after = Pt(28)
     add_caption(doc, "Figure", title, align="center")
 
 
@@ -1245,16 +1244,6 @@ def build():
     # TABLE DES MATIERES (fin, ESTA)
     page_break(doc)
     h(doc, "Table des matières", 1, "bm_tdm")
-    p(
-        doc,
-        "Table complète des titres et sous-titres. Dans Word : sélectionner le champ, "
-        "clic droit, Mettre à jour les champs, choisir Mettre à jour toute la table. "
-        "Les entrées deviennent cliquables. Les pages préliminaires restent en "
-        "chiffres romains ; le corps en chiffres arabes.",
-        italic=True,
-        first_line=False,
-        size=11,
-    )
     tdm = p(doc, "", first_line=False, align="left")
     add_toc_field(tdm, r'TOC \o "1-3" \h \z \u')
 
