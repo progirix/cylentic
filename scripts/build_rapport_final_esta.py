@@ -1227,40 +1227,14 @@ def build():
     # ANNEXES
     page_break(doc)
     h(doc, "Annexes", 1, "bm_annexes")
-    h(doc, "Annexe A : Inventaire des diagrammes UML", 2)
-    p(
-        doc,
-        "Les diagrammes PlantUML du projet couvrent les cas d'utilisation, classes, "
-        "objets, composants, déploiement, états, séquences et activités présentés au "
-        "chapitre 3. Ils sont fournis avec le dossier technique du projet.",
-        first_line=False,
-    )
-    h(doc, "Annexe B : Préfixes d'identifiants", 2)
+    h(doc, "Annexe A : Préfixes d'identifiants", 2)
     p(
         doc,
         "SADM- : Super Admin ; ADM- : administrateur d'établissement ; PROF- : "
         "professeur ; ETU- : étudiant. Le rôle est déduit du préfixe à la connexion.",
         first_line=False,
     )
-    h(doc, "Annexe C : Captures d'écran complémentaires", 2)
-    p(
-        doc,
-        "Le chapitre 4 prévoit déjà dix captures de l'interface Cylentic (connexion, "
-        "administration, parcours professeur, parcours étudiant et landing). Cette "
-        "annexe peut accueillir des vues supplémentaires si le jury le souhaite : "
-        "tableau de bord Super Admin, détail d'une copie corrigée, journal d'incidents "
-        "filtré, écran d'exclusion après sorties du plein écran, ou résultat d'un "
-        "import CSV avec rapport d'erreurs.",
-        first_line=False,
-    )
-    for title in [
-        "Tableau de bord Super Admin",
-        "Journal d'incidents d'une participation",
-        "Écran d'exclusion technique (plein écran)",
-        "Rapport d'erreurs d'import CSV",
-    ]:
-        figure_slot(doc, title)
-    h(doc, "Annexe D : Modèle CSV d'import des étudiants", 2)
+    h(doc, "Annexe B : Modèle CSV d'import des étudiants", 2)
     p(
         doc,
         "Colonnes attendues : nom, prénom, classe, matricule, email. Les lignes "
