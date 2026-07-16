@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "humantext": {
+      "command": "npx",
+      "args": ["-y", "@humantext/mcp-server"],
+      "env": {
+        "HUMANTEXT_API_KEY": "REMPLACE_PAR_TA_CLE_HUMANTEXT"
+      }
+    }
+  }
+}
