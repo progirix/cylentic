@@ -305,17 +305,25 @@ def add_cost_section(doc: Document):
     intro = insert_after(
         h,
         "Le tableau ci-dessous estime le coût du projet pour un déploiement pilote "
-        "sur douze mois. Les postes de développement sont intégrés au cadre académique "
-        "du projet de fin d'année.",
+        "sur douze mois, dimensionné pour environ 200 étudiants simultanés. "
+        "Le développement est valorisé au forfait pour l'équipe de trois personnes. "
+        "L'hébergement correspond à une configuration serveur capable d'absorber "
+        "un pic de composition en salle.",
     )
     # table after intro
     rows = [
         ["Poste", "Détail", "Coût estimé (FCFA)"],
-        ["Développement", "Équipe de 3 étudiants, cadre académique", "0"],
-        ["Hébergement VPS", "Serveur 4 vCPU, 8 Go RAM, 12 mois", "180 000"],
+        ["Développement", "3 développeurs × 4 mois × 200 000 FCFA/mois", "2 400 000"],
+        [
+            "Hébergement VPS",
+            "Serveur 8 vCPU, 16 Go RAM, 12 mois à 30 000 FCFA/mois, "
+            "capacité d'environ 200 étudiants simultanés",
+            "360 000",
+        ],
         ["Nom de domaine", "Enregistrement annuel", "15 000"],
+        ["Certificat SSL", "Let's Encrypt (gratuit)", "0"],
         ["Outils", "IDE, Git, Docker (open source)", "0"],
-        ["Total", "Déploiement pilote sur 12 mois", "195 000"],
+        ["Total", "Déploiement pilote sur 12 mois", "2 775 000"],
     ]
     table = doc.add_table(rows=len(rows), cols=3)
     table.style = "Table Grid"
