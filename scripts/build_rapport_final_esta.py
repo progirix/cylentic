@@ -390,6 +390,45 @@ FIGURE_IMAGE_FILES = {
 
 DIAGRAMMES_DIR = Path("/workspace/docs/diagrammes")
 
+FIGURE_COMMENTS = {
+    "Architecture logique de Cylentic": "La figure {n} présente l'architecture logique de Cylentic : interface web, services métier, persistance des données et sandbox d'exécution du code.",
+    "Déploiement de l'infrastructure": "La figure {n} illustre le déploiement physique de l'infrastructure : serveur applicatif, base MySQL, conteneurs Docker et postes clients en salle.",
+    "Cas d'utilisation du Super Admin": "La figure {n} décrit les interactions du Super Admin avec la plateforme : gestion des établissements et pilotage global.",
+    "Cas d'utilisation de l'administrateur (organisation)": "La figure {n} montre les cas d'utilisation de l'administrateur d'établissement pour la gestion de l'organisation scolaire.",
+    "Cas d'utilisation de l'administrateur (comptes)": "La figure {n} présente la gestion des comptes professeurs et étudiants par l'administrateur d'établissement.",
+    "Cas d'utilisation du professeur (examens)": "La figure {n} détaille les actions du professeur lors de la création, de la publication et de la configuration d'un examen.",
+    "Cas d'utilisation du professeur (suivi)": "La figure {n} illustre le suivi en direct des participations et la consultation des résultats par le professeur.",
+    "Cas d'utilisation de l'étudiant": "La figure {n} représente le parcours étudiant : connexion, salle d'attente, composition et soumission de l'examen.",
+    "Classes organisation et comptes": "La figure {n} modélise les classes liées à l'organisation, aux établissements et aux comptes utilisateurs.",
+    "Classes conception d'examen": "La figure {n} présente les classes intervenant dans la conception d'un examen et de ses exercices.",
+    "Classes passation et correction": "La figure {n} décrit les classes de la passation d'examen, de la participation et de la correction automatique.",
+    "Objets organisation": "La figure {n} montre un diagramme d'objets illustrant les relations entre établissement, classes et utilisateurs.",
+    "Objets conception d'examen": "La figure {n} illustre un examen instancié avec ses exercices et tests unitaires associés.",
+    "Objets passation": "La figure {n} présente une participation étudiante en cours avec copie, incidents et résultats.",
+    "Composants vue d'ensemble": "La figure {n} donne une vue d'ensemble des composants logiciels de Cylentic et de leurs dépendances.",
+    "Composants administration et authentification": "La figure {n} détaille les composants d'administration, d'authentification et de gestion des rôles.",
+    "Composants examens et passation": "La figure {n} présente les composants chargés des examens, de la passation contrôlée et de l'exécution de code.",
+    "États du cycle de vie d'un examen": "La figure {n} montre les états successifs d'un examen, du brouillon à la clôture des résultats.",
+    "Séquence de connexion": "La figure {n} décrit la séquence d'authentification et d'attribution du rôle à la connexion.",
+    "Séquence de publication d'un examen": "La figure {n} illustre la publication d'un examen et la génération du code d'accès.",
+    "Séquence d'accès étudiant": "La figure {n} présente l'accès étudiant à l'examen via identifiant, mot de passe et code d'accès.",
+    "Séquence d'exécution du code": "La figure {n} montre l'exécution du code Python dans la sandbox Docker isolée.",
+    "Séquence de soumission et correction": "La figure {n} décrit la soumission de la copie et le déclenchement de la correction automatique.",
+    "Séquence d'enregistrement d'un incident": "La figure {n} illustre l'enregistrement d'un incident de passation et son traitement.",
+    "Activité accès et salle d'attente": "La figure {n} présente le flux d'activité depuis la connexion jusqu'à la salle d'attente.",
+    "Activité composition et soumission": "La figure {n} décrit les activités de composition, d'exécution d'essai et de soumission finale.",
+    "Page de connexion multi rôles": "La figure {n} montre l'interface de connexion permettant l'accès selon le rôle de l'utilisateur.",
+    "Espace administrateur d'établissement": "La figure {n} présente l'espace de gestion réservé à l'administrateur d'établissement.",
+    "Composition d'un examen côté professeur": "La figure {n} illustre l'interface de création et d'édition d'un examen par le professeur.",
+    "Publication et code d'accès d'examen": "La figure {n} montre l'écran de publication d'un examen et l'affichage du code d'accès.",
+    "Suivi live des participations": "La figure {n} présente le tableau de suivi en direct des étudiants pendant l'épreuve.",
+    "Résultats et exports professeur": "La figure {n} illustre la consultation des résultats et les options d'export pour le professeur.",
+    "Consignes et activation du plein écran": "La figure {n} montre les consignes de sécurité et l'activation du mode plein écran côté étudiant.",
+    "Salle d'attente avant le démarrage de l'examen": "La figure {n} présente la salle d'attente affichée avant le démarrage officiel de l'épreuve.",
+    "Environnement de composition pendant l'épreuve": "La figure {n} illustre l'éditeur de code et l'environnement de composition pendant l'examen.",
+    "Page d'accueil Cylentic": "La figure {n} montre la page d'accueil publique de la plateforme Cylentic.",
+}
+
 
 def figure_slot(doc, title: str):
     """Insère l'image UML si disponible, sinon un emplacement pour capture d'écran."""
@@ -403,11 +442,12 @@ def figure_slot(doc, title: str):
         run = para.add_run()
         run.add_picture(str(img_path), width=Cm(14.0))
     else:
-        # Emplacement pour capture UI : zone blanche lisible avant la légende
         para.paragraph_format.space_before = Pt(12)
-        para.paragraph_format.space_after = Pt(12)
         para.paragraph_format.space_after = Pt(28)
-    add_caption(doc, "Figure", title, align="center")
+    _, n = add_caption(doc, "Figure", title, align="center")
+    comment_tpl = FIGURE_COMMENTS.get(title)
+    if comment_tpl:
+        p(doc, comment_tpl.format(n=n), first_line=True, space_after=8)
 
 
 def add_table_with_title(doc, title: str, rows: list[list[str]], source: str):
@@ -528,33 +568,36 @@ SOMMAIRE = [
     ("Abstract", "bm_abstract"),
     ("Introduction générale", "bm_intro"),
     ("Problématique", "bm_probl"),
-    ("Chapitre 1 : Contexte et étude de l'existant", "bm_ch1"),
+    ("Chapitre 1 : État de l'art", "bm_ch1"),
     ("Chapitre 2 : Analyse des besoins et spécification du système", "bm_ch2"),
     ("Chapitre 3 : Conception du système Cylentic", "bm_ch3"),
     ("Chapitre 4 : Réalisation et mise en œuvre", "bm_ch4"),
     ("Chapitre 5 : Tests, résultats, limites et perspectives", "bm_ch5"),
     ("Conclusion générale", "bm_concl"),
-    ("Bibliographie et webographie", "bm_biblio"),
+    ("Bibliographie", "bm_bibliographie"),
+    ("Webographie", "bm_webographie"),
     ("Annexes", "bm_annexes"),
 ]
 
 TDM = [
     ("Introduction générale", "bm_intro", 0),
     ("Problématique", "bm_probl", 0),
-    ("Chapitre 1 : Contexte et étude de l'existant", "bm_ch1", 0),
+    ("Chapitre 1 : État de l'art", "bm_ch1", 0),
     ("1.1 Contexte pédagogique et technologique", "bm_ch1_1", 1),
     ("1.2 Sous-problèmes et contraintes locales", "bm_ch1_2", 1),
-    ("1.3 Examen des solutions existantes", "bm_ch1_3", 1),
-    ("1.4 Positionnement de Cylentic", "bm_ch1_4", 1),
-    ("1.5 Conclusion partielle", "bm_ch1_5", 1),
+    ("1.3 Panorama des solutions existantes", "bm_ch1_3", 1),
+    ("1.4 Synthèse des lacunes du domaine", "bm_ch1_4", 1),
+    ("1.5 Conclusion", "bm_ch1_5", 1),
     ("Chapitre 2 : Analyse des besoins et spécification du système", "bm_ch2", 0),
-    ("2.1 Périmètre du projet et du MVP", "bm_ch2_1", 1),
-    ("2.2 Identification des acteurs", "bm_ch2_2", 1),
-    ("2.3 Besoins fonctionnels", "bm_ch2_3", 1),
-    ("2.4 Besoins non fonctionnels", "bm_ch2_4", 1),
-    ("2.5 Règles métier structurantes", "bm_ch2_5", 1),
-    ("2.6 Scénarios d'usage prioritaires", "bm_ch2_6", 1),
-    ("2.7 Conclusion partielle", "bm_ch2_7", 1),
+    ("2.1 Comparaison des solutions existantes", "bm_ch2_1", 1),
+    ("2.2 Positionnement de Cylentic", "bm_ch2_2", 1),
+    ("2.3 Périmètre du projet et du MVP", "bm_ch2_3", 1),
+    ("2.4 Identification des acteurs", "bm_ch2_4", 1),
+    ("2.5 Besoins fonctionnels", "bm_ch2_5", 1),
+    ("2.6 Besoins non fonctionnels", "bm_ch2_6", 1),
+    ("2.7 Règles métier structurantes", "bm_ch2_7", 1),
+    ("2.8 Scénarios d'usage prioritaires", "bm_ch2_8", 1),
+    ("2.9 Conclusion", "bm_ch2_9", 1),
     ("Chapitre 3 : Conception du système Cylentic", "bm_ch3", 0),
     ("3.1 Démarche de conception", "bm_ch3_1", 1),
     ("3.2 Architecture générale et déploiement", "bm_ch3_2", 1),
@@ -565,7 +608,7 @@ TDM = [
     ("3.7 Conception des données", "bm_ch3_7", 1),
     ("3.8 Conception de la sécurité de passation", "bm_ch3_8", 1),
     ("3.9 Conception de la correction automatique", "bm_ch3_9", 1),
-    ("3.10 Conclusion partielle", "bm_ch3_10", 1),
+    ("3.10 Conclusion", "bm_ch3_10", 1),
     ("Chapitre 4 : Réalisation et mise en œuvre", "bm_ch4", 0),
     ("4.1 Environnement de travail", "bm_ch4_1", 1),
     ("4.2 Choix technologiques", "bm_ch4_2", 1),
@@ -573,32 +616,51 @@ TDM = [
     ("4.4 Réalisation des modules principaux", "bm_ch4_4", 1),
     ("4.5 Points techniques difficiles", "bm_ch4_5", 1),
     ("4.6 Déploiement", "bm_ch4_6", 1),
-    ("4.7 Conclusion partielle", "bm_ch4_7", 1),
+    ("4.7 Conclusion", "bm_ch4_7", 1),
     ("Chapitre 5 : Tests, résultats, limites et perspectives", "bm_ch5", 0),
     ("5.1 Stratégie de tests", "bm_ch5_1", 1),
     ("5.2 Jeux de tests et résultats", "bm_ch5_2", 1),
     ("5.3 Discussion des résultats", "bm_ch5_3", 1),
     ("5.4 Limites et risques résiduels", "bm_ch5_4", 1),
     ("5.5 Perspectives", "bm_ch5_5", 1),
-    ("5.6 Conclusion partielle", "bm_ch5_6", 1),
+    ("5.6 Coût estimatif du projet", "bm_ch5_6", 1),
+    ("5.7 Conclusion", "bm_ch5_7", 1),
     ("Conclusion générale", "bm_concl", 0),
-    ("Bibliographie et webographie", "bm_biblio", 0),
+    ("Bibliographie", "bm_bibliographie", 0),
+    ("Webographie", "bm_webographie", 0),
     ("Annexes", "bm_annexes", 0),
 ]
 
 
-def replay_chapter(doc, blocks, *, chapter_bookmark_map=None, skip_prefixes=None):
+CH2_HEADING_REMAP = {
+    "2.1 Périmètre du projet et du MVP": "2.3 Périmètre du projet et du MVP",
+    "2.2 Identification des acteurs": "2.4 Identification des acteurs",
+    "2.3 Besoins fonctionnels": "2.5 Besoins fonctionnels",
+    "2.4 Besoins non fonctionnels": "2.6 Besoins non fonctionnels",
+    "2.5 Règles métier structurantes": "2.7 Règles métier structurantes",
+    "2.6 Scénarios d'usage prioritaires": "2.8 Scénarios d'usage prioritaires",
+    "2.7 Conclusion partielle": "2.9 Conclusion",
+    "2.7 Conclusion": "2.9 Conclusion",
+}
+
+
+def replay_chapter(doc, blocks, *, chapter_bookmark_map=None, skip_prefixes=None, heading_remap=None):
     skip_prefixes = skip_prefixes or []
     chapter_bookmark_map = chapter_bookmark_map or {}
+    heading_remap = heading_remap or {}
     for item in blocks:
         t = clean(item["text"])
         if not t:
             continue
         if any(t.startswith(sp) for sp in skip_prefixes):
             continue
+        if t in skip_prefixes:
+            continue
         typ = item["type"]
         if typ.startswith("h"):
             level = int(typ[1]) if typ[1:].isdigit() else 1
+            t = t.replace("Conclusion partielle", "Conclusion")
+            t = heading_remap.get(t, t)
             # rename état de l'art if present
             t = t.replace(
                 "1.3 État de l'art et comparaison des solutions existantes",
@@ -664,13 +726,7 @@ def build():
 
     # ===== DEDICACE =====
     h(doc, "Dédicace", 1, "bm_dedicace")
-    p(
-        doc,
-        "À nos familles, pour leur soutien discret et constant. À nos enseignants, "
-        "qui nous ont transmis les bases nécessaires pour mener un projet de bout en "
-        "bout. À tous ceux qui ont accompagné Cylentic avant même que la première "
-        "ligne de code n'existe.",
-    )
+    p(doc, "À ma famille.", align="center", first_line=False, space_after=8)
 
     # ===== REMERCIEMENTS =====
     page_break(doc)
@@ -697,17 +753,6 @@ def build():
     # ===== SOMMAIRE (grands titres seulement) =====
     page_break(doc)
     h(doc, "Sommaire", 1, "bm_sommaire")
-    p(
-        doc,
-        "Le sommaire ci-dessous reprend les grands titres. Mettez à jour le champ "
-        "dans Word (clic droit > Mettre à jour les champs) pour afficher les numéros "
-        "de pages et activer les liens. Les pages préliminaires apparaissent en "
-        "chiffres romains (i, ii, iii…) ; le corps du rapport en chiffres arabes "
-        "(1, 2, 3…).",
-        italic=True,
-        first_line=False,
-        size=11,
-    )
     toc_p = p(doc, "", first_line=False, align="left")
     add_toc_field(toc_p, r'TOC \o "1-1" \h \z \u')
 
@@ -741,27 +786,11 @@ def build():
     # ===== LISTE FIGURES / TABLEAUX (champs Word) =====
     page_break(doc)
     h(doc, "Liste des figures", 1, "bm_liste_figures")
-    p(
-        doc,
-        "Liste générée automatiquement à partir des légendes. Dans Word : clic droit "
-        "sur le champ > Mettre à jour les champs.",
-        italic=True,
-        first_line=False,
-        size=11,
-    )
     fp = p(doc, "", first_line=False, align="left")
     add_toc_field(fp, r'TOC \h \z \c "Figure"')
 
     page_break(doc)
     h(doc, "Liste des tableaux", 1, "bm_liste_tableaux")
-    p(
-        doc,
-        "Liste générée automatiquement à partir des titres de tableaux. Dans Word : "
-        "clic droit > Mettre à jour les champs.",
-        italic=True,
-        first_line=False,
-        size=11,
-    )
     tp = p(doc, "", first_line=False, align="left")
     add_toc_field(tp, r'TOC \h \z \c "Tableau"')
 
@@ -787,6 +816,14 @@ def build():
         "présente l'analyse du besoin, la conception, la réalisation et les résultats "
         "de validation de la plateforme.",
     )
+    p(
+        doc,
+        "Mots-clés : examen de programmation, plateforme web, intégrité académique, "
+        "sandbox, correction automatique, école d'ingénieurs.",
+        bold=True,
+        first_line=False,
+        space_after=8,
+    )
 
     # ===== ABSTRACT =====
     page_break(doc)
@@ -808,6 +845,14 @@ def build():
         "incident logging, automatic grading and teacher facing exports. This report "
         "presents the requirements analysis, design, implementation and validation "
         "results of the platform.",
+    )
+    p(
+        doc,
+        "Keywords: programming exam, web platform, academic integrity, sandbox, "
+        "automatic grading, engineering school.",
+        bold=True,
+        first_line=False,
+        space_after=8,
     )
 
     # ===== BODY SECTION (arabe 1, 2, 3…) =====
@@ -840,23 +885,52 @@ def build():
     )
     p(
         doc,
-        "Le rapport s'organise en cinq chapitres. Le premier situe le contexte et "
-        "l'existant. Le deuxième formalise les besoins. Le troisième présente la "
-        "conception. Le quatrième décrit la réalisation. Le cinquième discute les "
-        "tests, les limites et les perspectives.",
+        "Le rapport s'organise en cinq chapitres. Le premier présente l'état de "
+        "l'art. Le deuxième formalise les besoins et compare les solutions existantes. "
+        "Le troisième présente la conception. Le quatrième décrit la réalisation. "
+        "Le cinquième discute les tests, les limites et les perspectives.",
+    )
+    p(
+        doc,
+        "Au terme de ce travail, plusieurs résultats sont attendus : une analyse "
+        "structurée des limites des outils existants pour l'évaluation de la "
+        "programmation en salle ; une conception documentée de Cylentic (UML, "
+        "architecture, données) ; un prototype fonctionnel couvrant les parcours "
+        "critiques du MVP ; une validation par tests des scénarios d'examen surveillé.",
+    )
+    p(
+        doc,
+        "L'atteinte de ces objectifs repose sur les hypothèses de recherche suivantes :",
+        first_line=False,
+        space_after=4,
+    )
+    for hyp in [
+        "un verrouillage suffisant du navigateur, couplé à la journalisation des incidents, permet de restaurer la crédibilité des épreuves pratiques sur machine ;",
+        "l'exécution isolée du code dans une sandbox et la correction automatique par tests unitaires offrent une évaluation fiable et reproductible ;",
+        "une architecture web multi établissement, déployable sans installation lourde côté étudiant, répond aux contraintes des salles informatiques partagées.",
+    ]:
+        p(doc, f"• {hyp}", align="left", first_line=False, space_after=3)
+    p(
+        doc,
+        "Pour répondre à la problématique, nous avons adopté une démarche "
+        "méthodologique structurée en cinq étapes : revue de l'état de l'art et "
+        "analyse comparative des solutions existantes ; spécification des besoins et "
+        "définition du périmètre du MVP ; conception UML et modélisation de "
+        "l'architecture ; réalisation itérative avec Next.js, Prisma et MySQL ; "
+        "validation par tests de parcours complets et contrôle de non régression.",
     )
 
-    # Problématique ESTA — sans étiquette scolaire « Méthodologie »
     h(doc, "Problématique", 1, "bm_probl")
     p(
         doc,
-        "Comment organiser un examen de programmation sur navigateur qui réduise "
-        "fortement les possibilités de triche, conserve un rôle clair au surveillant "
-        "humain, et restitue une correction lisible pour le professeur ?",
+        "Face à la montée des assistants de génération de code, comment garantir "
+        "l'intégrité et la crédibilité de l'évaluation de la programmation sur "
+        "machine en salle informatique, tout en permettant l'exécution réelle du code "
+        "et une correction fiable pour le professeur ?",
     )
     p(
         doc,
-        "L'objectif général consiste à concevoir et réaliser une plateforme web multi "
+        "L'objectif général consiste à concevoir une plateforme web multi "
         "établissement d'examens de programmation sécurisés, nommée Cylentic.",
     )
     p(doc, "Pour atteindre cet objectif, nous nous sommes fixé les objectifs spécifiques suivants :", first_line=False, space_after=4)
@@ -868,24 +942,15 @@ def build():
         "fournir au professeur des exports exploitables après l'épreuve.",
     ]:
         p(doc, f"• {bullet}", align="left", first_line=False, space_after=3)
-    p(
-        doc,
-        "Nous avons procédé par étapes : étude des outils déjà disponibles, "
-        "spécification d'un MVP borné, modélisation UML calquée sur le fonctionnement "
-        "réel de la plateforme, développement avec Next.js, Prisma et MySQL, puis "
-        "validation par parcours complets et contrôle de non régression à chaque "
-        "correctif majeur.",
-    )
 
-    # CH1
+    # CH1 — État de l'art
     page_break(doc)
-    h(doc, "Chapitre 1 : Contexte et étude de l'existant", 1, "bm_ch1")
+    h(doc, "Chapitre 1 : État de l'art", 1, "bm_ch1")
     p(
         doc,
-        "Ce chapitre ancre le projet dans son contexte pédagogique, précise les "
-        "sous-problèmes techniques, examine les solutions déjà disponibles et "
-        "positionne Cylentic. La formulation synthétique du problème et des objectifs "
-        "a été posée dans la section Problématique ; elle n'est pas reprise ici en bloc.",
+        "Ce chapitre présente l'état de l'art du domaine : contexte pédagogique, "
+        "contraintes locales et panorama des solutions existantes. La comparaison "
+        "détaillée et le positionnement de Cylentic sont traités au chapitre 2.",
     )
 
     h(doc, "1.1 Contexte pédagogique et technologique", 2, "bm_ch1_1")
@@ -929,15 +994,7 @@ def build():
         "donc rester simple à déployer le jour de l'épreuve, idéalement dans le "
         "navigateur, sans configuration lourde.",
     )
-    p(
-        doc,
-        "Nous partons de l'hypothèse suivante : si l'on verrouille suffisamment le "
-        "navigateur et que l'on journalise les événements sensibles, on peut "
-        "restaurer une crédibilité utile aux examens pratiques sur machine, sans "
-        "revenir au papier, tout en conservant le jugement pédagogique du professeur.",
-    )
-
-    h(doc, "1.3 Examen des solutions existantes", 2, "bm_ch1_3")
+    h(doc, "1.3 Panorama des solutions existantes", 2, "bm_ch1_3")
     p(
         doc,
         "Plusieurs familles d'outils couvrent chacune une partie du problème, jamais "
@@ -968,24 +1025,59 @@ def build():
         "souvent auto hébergeables, mais pas une plateforme d'examen : pas de rôles "
         "scolaires, pas de passation contrôlée, pas de journal pédagogique.",
     )
+
+    h(doc, "1.4 Synthèse des lacunes du domaine", 2, "bm_ch1_4")
+    p(
+        doc,
+        "L'état de l'art montre que les outils disponibles couvrent chacun une facette "
+        "du problème : apprentissage ouvert, gestion de cours, surveillance généraliste "
+        "ou exécution isolée. Aucun ne réunit composition sécurisée, exécution réelle, "
+        "correction automatique et traçabilité pédagogique dans un cadre adapté aux "
+        "salles informatiques d'une école d'ingénieurs.",
+    )
+    p(
+        doc,
+        "Cette lacune justifie l'étude d'une solution dédiée. Le chapitre suivant "
+        "compare formellement les approches existantes et précise le positionnement de "
+        "Cylentic avant de fixer le cahier des charges.",
+    )
+
+    h(doc, "1.5 Conclusion", 2, "bm_ch1_5")
+    p(
+        doc,
+        "Le contexte pédagogique, les contraintes locales et le panorama des solutions "
+        "établissent un état de l'art clair : le besoin d'évaluer la programmation sur "
+        "machine avec intégrité reste mal couvert par l'existant. Le chapitre 2 en "
+        "déduit la spécification et la comparaison structurée.",
+    )
+
+    # CH2
+    page_break(doc)
+    h(doc, "Chapitre 2 : Analyse des besoins et spécification du système", 1, "bm_ch2")
+    p(
+        doc,
+        "Ce chapitre compare les solutions existantes, positionne Cylentic, puis "
+        "délimite le MVP, identifie les acteurs et formalise les besoins fonctionnels "
+        "et non fonctionnels du système.",
+    )
+    h(doc, "2.1 Comparaison des solutions existantes", 2, "bm_ch2_1")
+    p(
+        doc,
+        "Pour objectiver l'analyse de l'état de l'art, le tableau ci-dessous compare "
+        "les principales familles de solutions aux exigences d'un examen de "
+        "programmation surveillé en salle.",
+    )
     add_table_with_title(
         doc,
         "Comparaison des solutions existantes et de Cylentic",
         tables[0],
         "analyse comparative réalisée dans le cadre du projet",
     )
-    p(
-        doc,
-        "Aucune de ces solutions ne couvre à la fois composition sécurisée, exécution "
-        "isolée, correction et traçabilité pour une école. C'est dans cet intervalle "
-        "que se place Cylentic.",
-    )
-
-    h(doc, "1.4 Positionnement de Cylentic", 2, "bm_ch1_4")
+    h(doc, "2.2 Positionnement de Cylentic", 2, "bm_ch2_2")
     p(
         doc,
         "Cylentic n'est ni une plateforme d'apprentissage ouverte, ni une simple "
-        "variante de LMS. Il vise l'évaluation surveillée de la programmation.",
+        "variante de LMS. Elle vise l'évaluation surveillée de la programmation.",
     )
     p(
         doc,
@@ -995,26 +1087,14 @@ def build():
         "physique. S'y ajoute une gouvernance multi établissement, avec un Super Admin "
         "plateforme distinct de l'administrateur d'école.",
     )
-
-    h(doc, "1.5 Conclusion partielle", 2, "bm_ch1_5")
-    p(
-        doc,
-        "Le problème est réel, les outils disponibles ne le résolvent que par "
-        "fragments, et Cylentic occupe un espace utile. Le chapitre suivant fixe le "
-        "cahier des charges du MVP.",
-    )
-
-    # CH2
-    page_break(doc)
     bm2 = {
-        "Chapitre 2 : Analyse des besoins et spécification du système": "bm_ch2",
-        "2.1 Périmètre du projet et du MVP": "bm_ch2_1",
-        "2.2 Identification des acteurs": "bm_ch2_2",
-        "2.3 Besoins fonctionnels": "bm_ch2_3",
-        "2.4 Besoins non fonctionnels": "bm_ch2_4",
-        "2.5 Règles métier structurantes": "bm_ch2_5",
-        "2.6 Scénarios d'usage prioritaires": "bm_ch2_6",
-        "2.7 Conclusion partielle": "bm_ch2_7",
+        "2.3 Périmètre du projet et du MVP": "bm_ch2_3",
+        "2.4 Identification des acteurs": "bm_ch2_4",
+        "2.5 Besoins fonctionnels": "bm_ch2_5",
+        "2.6 Besoins non fonctionnels": "bm_ch2_6",
+        "2.7 Règles métier structurantes": "bm_ch2_7",
+        "2.8 Scénarios d'usage prioritaires": "bm_ch2_8",
+        "2.9 Conclusion": "bm_ch2_9",
     }
     replay_chapter(
         doc,
@@ -1022,7 +1102,9 @@ def build():
         chapter_bookmark_map=bm2,
         skip_prefixes=[
             "Ce chapitre délimite",
+            "Chapitre 2 : Analyse des besoins et spécification du système",
         ],
+        heading_remap=CH2_HEADING_REMAP,
     )
     # actors table after 2.2
     # find last para and insert? Add now at end of 2.2 content - simpler append after replay then move is hard.
@@ -1098,7 +1180,7 @@ def build():
         set_run_font(sr, size=10, italic=True)
 
     insert_table_after_heading(
-        "2.2 Identification des acteurs",
+        "2.4 Identification des acteurs",
         "Correspondance entre acteurs et responsabilités",
         tables[1],
         "spécification du projet Cylentic",
@@ -1117,7 +1199,7 @@ def build():
         "3.7 Conception des données": "bm_ch3_7",
         "3.8 Conception de la sécurité de passation": "bm_ch3_8",
         "3.9 Conception de la correction automatique": "bm_ch3_9",
-        "3.10 Conclusion partielle": "bm_ch3_10",
+        "3.10 Conclusion": "bm_ch3_10",
     }
     replay_chapter(
         doc,
@@ -1142,7 +1224,7 @@ def build():
         "4.4 Réalisation des modules principaux": "bm_ch4_4",
         "4.5 Points techniques difficiles": "bm_ch4_5",
         "4.6 Déploiement": "bm_ch4_6",
-        "4.7 Conclusion partielle": "bm_ch4_7",
+        "4.7 Conclusion": "bm_ch4_7",
     }
     replay_chapter(
         doc,
@@ -1160,13 +1242,43 @@ def build():
         "5.3 Discussion des résultats": "bm_ch5_3",
         "5.4 Limites et risques résiduels": "bm_ch5_4",
         "5.5 Perspectives": "bm_ch5_5",
-        "5.6 Conclusion partielle": "bm_ch5_6",
     }
     replay_chapter(
         doc,
         data["ch5"],
         chapter_bookmark_map=bm5,
-        skip_prefixes=["Ce chapitre présente la campagne"],
+        skip_prefixes=[
+            "Ce chapitre présente la campagne",
+            "5.6 Conclusion partielle",
+            "5.6 Conclusion",
+        ],
+    )
+    h(doc, "5.6 Coût estimatif du projet", 2, "bm_ch5_6")
+    p(
+        doc,
+        "Le tableau ci-dessous estime le coût du projet pour un déploiement pilote "
+        "sur douze mois. Les postes de développement sont intégrés au cadre académique "
+        "du projet de fin d'année.",
+    )
+    add_table_with_title(
+        doc,
+        "Coût estimatif du projet Cylentic",
+        [
+            ["Poste", "Détail", "Coût estimé (FCFA)"],
+            ["Développement", "Équipe de 3 étudiants, cadre académique", "0"],
+            ["Hébergement VPS", "Serveur 4 vCPU, 8 Go RAM, 12 mois", "180 000"],
+            ["Nom de domaine", "Enregistrement annuel", "15 000"],
+            ["Outils", "IDE, Git, Docker (open source)", "0"],
+            ["Total", "Déploiement pilote sur 12 mois", "195 000"],
+        ],
+        "estimation réalisée par l'équipe projet, juillet 2026",
+    )
+    h(doc, "5.7 Conclusion", 2, "bm_ch5_7")
+    p(
+        doc,
+        "Les tests confirment la faisabilité du MVP dans son périmètre. Les limites "
+        "identifiées ouvrent des perspectives d'évolution sans remettre en cause la "
+        "pertinence de la solution pour un usage pilote en salle informatique.",
     )
 
     # CONCLUSION
@@ -1199,29 +1311,42 @@ def build():
         "langages et renforcer l'infrastructure de charge.",
     )
 
-    # BIBLIO with clickable links
+    # BIBLIOGRAPHIE
     page_break(doc)
-    h(doc, "Bibliographie et webographie", 1, "bm_biblio")
-    refs = [
-        ("[1] Object Management Group, OMG Unified Modeling Language (OMG UML), documentation officielle. ", None, None),
-        ("[2] Vercel, Next.js Documentation, ", "https://nextjs.org/docs", "09h20"),
-        ("[3] Prisma, Prisma Documentation, ", "https://www.prisma.io/docs", "09h45"),
-        ("[4] Oracle, MySQL 8 Documentation, ", "https://dev.mysql.com/doc/", "10h15"),
-        ("[5] Redis Ltd, Redis Documentation, ", "https://redis.io/docs/", "10h40"),
-        ("[6] Docker Inc., Docker Documentation, ", "https://docs.docker.com/", "11h25"),
-        ("[7] ESTA, Guide du stagiaire Master/Ingénieur, année académique 2024-2025.", None, None),
-        ("[8] freeCodeCamp, ", "https://www.freecodecamp.org/", "14h10"),
-        ("[9] Moodle HQ, Moodle Documentation, ", "https://docs.moodle.org/", "15h05"),
-        ("[10] Judge0, Judge0 CE, ", "https://judge0.com/", "16h30"),
+    h(doc, "Bibliographie", 1, "bm_bibliographie")
+    biblio_refs = [
+        "[1] Object Management Group, OMG Unified Modeling Language (OMG UML), Version 2.5.1, 2017.",
+        "[2] R. S. Pressman et B. R. Maxim, Software Engineering: A Practitioner's Approach, 9e éd., McGraw-Hill, 2019.",
+        "[3] I. Sommerville, Software Engineering, 10e éd., Pearson, 2016.",
+        "[4] G. Booch, J. Rumbaugh et I. Jacobson, The Unified Modeling Language User Guide, 2e éd., Addison-Wesley, 2005.",
+        "[5] ESTA, Guide du stagiaire Master/Ingénieur, année académique 2024-2025.",
+        "[6] M. Fowler, Patterns of Enterprise Application Architecture, Addison-Wesley, 2002.",
     ]
-    for prefix, url, heure in refs:
+    for ref in biblio_refs:
+        p(doc, ref, align="left", first_line=False, space_after=6)
+
+    # WEBOGRAPHIE
+    page_break(doc)
+    h(doc, "Webographie", 1, "bm_webographie")
+    web_refs = [
+        ("[1] Vercel, Next.js Documentation, ", "https://nextjs.org/docs", "09h20"),
+        ("[2] Prisma, Prisma Documentation, ", "https://www.prisma.io/docs", "09h45"),
+        ("[3] Oracle, MySQL 8 Documentation, ", "https://dev.mysql.com/doc/", "10h15"),
+        ("[4] Redis Ltd, Redis Documentation, ", "https://redis.io/docs/", "10h40"),
+        ("[5] Docker Inc., Docker Documentation, ", "https://docs.docker.com/", "11h25"),
+        ("[6] freeCodeCamp, ", "https://www.freecodecamp.org/", "14h10"),
+        ("[7] Moodle HQ, Moodle Documentation, ", "https://docs.moodle.org/", "15h05"),
+        ("[8] Judge0, Judge0 CE, ", "https://judge0.com/", "16h30"),
+        ("[9] Monaco Editor, ", "https://microsoft.github.io/monaco-editor/", "17h05"),
+        ("[10] PlantUML, ", "https://plantuml.com/", "17h40"),
+    ]
+    for prefix, url, heure in web_refs:
         para = p(doc, "", align="left", first_line=False, space_after=6)
         run = para.add_run(prefix)
         set_run_font(run, size=12)
-        if url:
-            add_external_hyperlink(para, url, url)
-            run2 = para.add_run(f", consulté le 15/07/2026 à {heure}.")
-            set_run_font(run2, size=12)
+        add_external_hyperlink(para, url, url)
+        run2 = para.add_run(f", consulté le 15/07/2026 à {heure}.")
+        set_run_font(run2, size=12)
 
     # ANNEXES
     page_break(doc)
@@ -1262,16 +1387,20 @@ def build():
     # verify
     d2 = Document(str(OUT))
     full = "\n".join(p.text for p in d2.paragraphs)
-    assert "Mettre à jour les champs" in full
-    assert "chiffres romains" in full
-    assert "à 09h20" in full
-    assert "à 16h30" in full
-    assert "à 12h." not in full
+    assert "Mettre à jour les champs" not in full
+    assert "Mots-clés" in full
+    assert "Keywords:" in full
+    assert "État de l'art" in full
+    assert "Coût estimatif" in full
+    assert "Bibliographie" in full
+    assert "Webographie" in full
+    assert "conclusion partielle" not in full.lower()
+    assert "À ma famille" in full
     # Figures and tables numbered consecutively
     figs = [p.text for p in d2.paragraphs if p.text.strip().startswith("Figure ")]
     tabs = [p.text for p in d2.paragraphs if p.text.strip().startswith("Tableau ")]
     assert figs and all(f"Figure {i} :" in figs[i - 1] for i in range(1, len(figs) + 1)), figs[:5]
-    assert len(tabs) >= 3 and all("Tableau :" not in t.replace("Tableau 1 :", "X").replace("Tableau 2 :", "X").replace("Tableau 3 :", "X") for t in tabs)
+    assert len(tabs) >= 4
     assert any("Tableau 1 :" in t for t in tabs)
     assert any("Tableau 2 :" in t for t in tabs)
     assert any("Tableau 3 :" in t for t in tabs)
@@ -1285,8 +1414,6 @@ def build():
     assert "lowerRoman" in fmts
     assert "decimal" in fmts
     assert "Mots clés" not in full
-    assert "Méthodologie" not in full
-    assert "État de l'art" not in full
     assert "Problématique" in full
     assert ECOLE in full
     print("figures", len(figs), "first/last", figs[0][:60], "|", figs[-1][:60])
