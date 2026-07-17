@@ -1,0 +1,86 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam nodesep 35
+skinparam ranksep 40
+
+title Diagramme de composants 3/3 : Examens, session et infrastructure
+
+actor "Utilisateur" as User
+
+package "Navigateur" {
+  [Espace Professeur] as Prof
+  [Espace Étudiant] as Etu
+  [Éditeur Monaco] as Monaco
+}
+
+package "Application Next.js" {
+  [Middleware d'authentification] as MW
+
+  package "Couche API" {
+    [API Examens] as ApiExams
+    [API Session d'examen] as ApiSession
+    [API Résultats et exports] as ApiResults
+  }
+
+  package "Couche métier" {
+    [Service Examens] as SvcExams
+    [Service Participation] as SvcPart
+    [Service Sandbox] as SvcSandbox
+    [Service Résultats] as SvcResults
+    [Validateurs Zod] as Zod
+  }
+
+  package "Accès aux données" {
+    [Repositories] as Repo
+    [Client Prisma] as Prisma
+    [Client Redis] as RedisClient
+  }
+
+  package "Workers" {
+    [Worker de correction] as WGrade
+    [Worker de statut d'examen] as WStatus
+  }
+}
+
+database "MySQL" as DB
+database "Redis" as Redis
+[Sandbox Docker Python] as Sandbox
+
+User --> Prof
+User --> Etu
+Etu --> Monaco
+
+Prof --> MW
+Etu --> MW
+
+MW --> ApiExams
+MW --> ApiSession
+MW --> ApiResults
+
+ApiExams --> SvcExams
+ApiSession --> SvcPart
+ApiSession --> SvcSandbox
+ApiResults --> SvcResults
+
+SvcExams --> Zod
+SvcPart --> Zod
+
+SvcExams --> Repo
+SvcPart --> Repo
+SvcResults --> Repo
+WGrade --> Repo
+WStatus --> Repo
+
+Repo --> Prisma
+Prisma --> DB
+
+SvcPart --> RedisClient
+WStatus --> RedisClient
+RedisClient --> Redis
+
+SvcSandbox --> Sandbox
+WGrade --> SvcSandbox
+
+@enduml

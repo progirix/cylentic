@@ -1,0 +1,48 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+
+title Diagramme de cas d'utilisation : Étudiant
+
+actor "Étudiant" as Etu
+
+rectangle "Cylentic" {
+
+  package "Authentification" {
+    usecase "Se connecter" as UC1
+    usecase "Changer son mot de passe" as UC2
+  }
+
+  package "Accès à l'examen" {
+    usecase "Consulter les consignes de sécurité" as UC3
+    usecase "Activer le plein écran" as UC4
+    usecase "Entrer en salle d'attente" as UC5
+  }
+
+  package "Composition" {
+    usecase "Naviguer entre les exercices" as UC6
+    usecase "Rédiger du code" as UC7
+    usecase "Exécuter le code" as UC8
+    usecase "Répondre aux questions QCM" as UC9
+    usecase "Soumettre l'examen" as UC10
+    usecase "Consulter la confirmation de soumission" as UC11
+  }
+}
+
+Etu --> UC1
+Etu --> UC2
+Etu --> UC3
+Etu --> UC4
+Etu --> UC5
+Etu --> UC6
+Etu --> UC7
+Etu --> UC8
+Etu --> UC9
+Etu --> UC10
+Etu --> UC11
+
+UC5 ..> UC3 : <<include>>
+UC5 ..> UC4 : <<include>>
+
+@enduml

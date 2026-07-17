@@ -1,0 +1,43 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam nodesep 45
+skinparam ranksep 50
+
+title Diagramme de déploiement : Infrastructure Cylentic
+
+node "Poste utilisateur" as Client {
+  artifact "Navigateur web" as Browser
+  artifact "Interface Cylentic\n(pages et éditeur Monaco)" as UI
+}
+
+node "Serveur d'application" as AppServer {
+  artifact "Application Next.js" as App
+  artifact "Worker de correction" as WGrade
+  artifact "Worker de statut d'examen" as WStatus
+}
+
+node "Serveur de base de données" as DbServer {
+  artifact "SGBD MySQL" as MySQL
+}
+
+node "Serveur de cache et files d'attente" as CacheServer {
+  artifact "Redis" as Redis
+}
+
+node "Hôte d'exécution isolée" as SandboxHost {
+  artifact "Conteneur sandbox Python" as Sandbox
+}
+
+Browser --> UI
+UI --> App : HTTPS
+App --> MySQL : protocole MySQL
+App --> Redis : protocole Redis
+WGrade --> MySQL : protocole MySQL
+WGrade --> Redis : protocole Redis
+WStatus --> MySQL : protocole MySQL
+WStatus --> Redis : protocole Redis
+App --> Sandbox : exécution Docker
+WGrade --> Sandbox : exécution Docker
+
+@enduml

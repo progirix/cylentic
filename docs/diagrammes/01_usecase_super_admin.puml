@@ -1,0 +1,51 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+
+title Diagramme de cas d'utilisation : Super administrateur
+
+actor "Super administrateur" as SA
+
+rectangle "Cylentic" {
+
+  package "Authentification" {
+    usecase "Se connecter" as UC1
+  }
+
+  package "Vue d'ensemble" {
+    usecase "Consulter le tableau de bord" as UC2
+    usecase "Consulter les statistiques globales" as UC3
+  }
+
+  package "Gestion des établissements" {
+    usecase "Consulter la liste des établissements" as UC4
+    usecase "Suspendre un établissement" as UC5
+    usecase "Réactiver un établissement" as UC6
+  }
+
+  package "Gestion des plans tarifaires" {
+    usecase "Consulter les plans tarifaires" as UC7
+    usecase "Modifier un plan tarifaire" as UC8
+  }
+
+  package "Support" {
+    usecase "Consulter les feedbacks" as UC9
+  }
+}
+
+SA --> UC1
+SA --> UC2
+SA --> UC3
+SA --> UC4
+SA --> UC5
+SA --> UC6
+SA --> UC7
+SA --> UC8
+SA --> UC9
+
+UC5 ..> UC4 : <<include>>
+UC6 ..> UC4 : <<include>>
+UC8 ..> UC7 : <<include>>
+
+@enduml

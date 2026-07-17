@@ -1,0 +1,159 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam nodesep 30
+skinparam ranksep 35
+hide empty methods
+hide circle
+
+title Diagramme d'objets 1/3 : Organisation et comptes
+
+object "platformAdmin1: PlatformAdmin" as platformAdmin1 {
+  id = "pa-0001"
+  identifier = "SADM-0001"
+  email = "superadmin@cylentic.local"
+  firstName = "Super"
+  lastName = "Admin"
+  passwordHash = "***"
+  isActive = true
+  lastLoginAt = "2026-07-10 08:00:00"
+}
+
+object "planPro: SubscriptionPlan" as planPro {
+  id = "plan-pro"
+  code = "PRO"
+  name = "Pro"
+  maxTeachers = 20
+  maxStudents = 500
+  maxExamsPerMonth = 50
+  priceMin = 0
+  priceMax = 0
+  currency = "XOF"
+  features = {}
+  isActive = true
+}
+
+object "etab1: Establishment" as etab1 {
+  id = "est-001"
+  name = "École d'Ingénieurs de Ouagadougou"
+  acronym = "EIO"
+  type = "engineering_school"
+  country = "Burkina Faso"
+  city = "Ouagadougou"
+  timezone = "Africa/Ouagadougou"
+  officialEmail = "contact@eio.bf"
+  phone = "+22670000000"
+  isActive = true
+  onboardingCompletedAt = "2026-06-01 10:00:00"
+}
+
+object "abo1: EstablishmentSubscription" as abo1 {
+  id = "sub-001"
+  establishmentId = "est-001"
+  planId = "plan-pro"
+  status = "trial"
+  isSimulated = true
+  trialEndsAt = "2026-07-31 23:59:59"
+  startedAt = "2026-07-01 00:00:00"
+  currentPeriodEnd = "2026-07-31 23:59:59"
+}
+
+object "annee2026: AcademicYear" as annee2026 {
+  id = "year-2026"
+  establishmentId = "est-001"
+  label = "2025-2026"
+  startDate = "2025-10-01"
+  endDate = "2026-07-31"
+  isActive = true
+  isArchived = false
+}
+
+object "classeL3: Class" as classeL3 {
+  id = "class-l3"
+  establishmentId = "est-001"
+  name = "L3 Informatique"
+  track = "Informatique"
+  level = "L3"
+  isArchived = false
+}
+
+object "prof1: User" as prof1 {
+  id = "user-prof-1"
+  establishmentId = "est-001"
+  identifier = "PROF-EIO-0001"
+  role = "teacher"
+  email = "kouassi@eio.bf"
+  firstName = "Jean"
+  lastName = "Kouassi"
+  passwordHash = "***"
+  mustChangePassword = false
+  isActive = true
+  lastLoginAt = "2026-07-15 07:00:00"
+}
+
+object "profilProf1: TeacherProfile" as profilProf1 {
+  userId = "user-prof-1"
+  subjects = "Algorithmique, Python"
+  function = "Enseignant"
+}
+
+object "etu1: User" as etu1 {
+  id = "user-etu-1"
+  establishmentId = "est-001"
+  identifier = "ETU-EIO-2026-0001"
+  role = "student"
+  email = "amina.sawadogo@eio.bf"
+  firstName = "Amina"
+  lastName = "Sawadogo"
+  passwordHash = "***"
+  mustChangePassword = false
+  isActive = true
+  lastLoginAt = "2026-07-15 07:55:00"
+}
+
+object "profilEtu1: StudentProfile" as profilEtu1 {
+  userId = "user-etu-1"
+  matricule = "EIO20260001"
+  classId = "class-l3"
+  academicYearId = "year-2026"
+}
+
+object "etu2: User" as etu2 {
+  id = "user-etu-2"
+  establishmentId = "est-001"
+  identifier = "ETU-EIO-2026-0002"
+  role = "student"
+  email = "ibrahim.ouedraogo@eio.bf"
+  firstName = "Ibrahim"
+  lastName = "Ouedraogo"
+  passwordHash = "***"
+  mustChangePassword = false
+  isActive = true
+  lastLoginAt = "2026-07-15 07:58:00"
+}
+
+object "profilEtu2: StudentProfile" as profilEtu2 {
+  userId = "user-etu-2"
+  matricule = "EIO20260002"
+  classId = "class-l3"
+  academicYearId = "year-2026"
+}
+
+platformAdmin1 -- etab1 : administre
+planPro -- abo1 : définit
+etab1 -- abo1 : souscrit
+etab1 -- annee2026 : organise
+etab1 -- classeL3 : regroupe
+etab1 -- prof1 : emploie
+etab1 -- etu1 : emploie
+etab1 -- etu2 : emploie
+prof1 -- profilProf1 : a pour profil
+etu1 -- profilEtu1 : a pour profil
+etu2 -- profilEtu2 : a pour profil
+classeL3 -- profilEtu1 : accueille
+classeL3 -- profilEtu2 : accueille
+annee2026 -- profilEtu1 : concerne
+annee2026 -- profilEtu2 : concerne
+
+@enduml

@@ -1,0 +1,38 @@
+@startuml
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+
+title Diagramme de séquence : Publication d'un examen
+
+actor "Professeur" as P
+participant "Interface professeur" as UI
+participant "API des examens" as API
+participant "Service des examens" as Exam
+database "MySQL" as DB
+
+P -> UI : demande la publication
+UI -> API : publier l'examen
+API -> Exam : publier
+
+Exam -> DB : charger l'examen et ses exercices
+DB --> Exam : examen
+
+alt examen introuvable ou non modifiable
+  Exam --> API : refus
+  API --> UI : erreur
+  UI --> P : afficher le message d'erreur
+else aucun exercice associé
+  Exam --> API : refus
+  API --> UI : erreur
+  UI --> P : afficher le message d'erreur
+else publication possible
+  Exam -> Exam : générer le code d'accès si absent
+  Exam -> DB : passer l'examen en statut publié\net enregistrer le code d'accès
+  DB --> Exam : examen publié
+  Exam --> API : identifiant, code d'accès, statut
+  API --> UI : succès
+  UI --> P : afficher le code d'accès
+end
+
+@enduml

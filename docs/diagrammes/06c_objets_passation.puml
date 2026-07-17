@@ -1,0 +1,132 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam nodesep 30
+skinparam ranksep 35
+hide empty methods
+hide circle
+
+title Diagramme d'objets 3/3 : Passation en cours
+
+object "examen1: Exam" as examen1 {
+  id = "exam-001"
+  establishmentId = "est-001"
+  teacherId = "user-prof-1"
+  name = "Examen Python Fonctions"
+  status = "in_progress"
+  startAt = "2026-07-15 08:00:00"
+  durationMinutes = 90
+  accessDelayMinutes = 15
+  correctionMode = "auto"
+  accessCode = "K7M2-9XPQ"
+  maxIncidentsBeforeClose = 2
+  timezone = "Africa/Ouagadougou"
+  publishedAt = "2026-07-14 18:00:00"
+  startedAt = "2026-07-15 08:00:00"
+  endedAt = null
+}
+
+object "exoSomme: Exercise" as exoSomme {
+  id = "ex-001"
+  examId = "exam-001"
+  type = "code"
+  title = "Somme de deux entiers"
+  statement = "Écrire une fonction somme(a, b) qui retourne a + b."
+  language = "python"
+  judge0LanguageId = 71
+  points = 10
+  correctionMode = "auto"
+  orderIndex = 0
+}
+
+object "etu1: User" as etu1 {
+  id = "user-etu-1"
+  establishmentId = "est-001"
+  identifier = "ETU-EIO-2026-0001"
+  role = "student"
+  email = "amina.sawadogo@eio.bf"
+  firstName = "Amina"
+  lastName = "Sawadogo"
+  passwordHash = "***"
+  mustChangePassword = false
+  isActive = true
+  lastLoginAt = "2026-07-15 07:55:00"
+}
+
+object "etu2: User" as etu2 {
+  id = "user-etu-2"
+  establishmentId = "est-001"
+  identifier = "ETU-EIO-2026-0002"
+  role = "student"
+  email = "ibrahim.ouedraogo@eio.bf"
+  firstName = "Ibrahim"
+  lastName = "Ouedraogo"
+  passwordHash = "***"
+  mustChangePassword = false
+  isActive = true
+  lastLoginAt = "2026-07-15 07:58:00"
+}
+
+object "part1: ExamParticipation" as part1 {
+  id = "part-001"
+  examId = "exam-001"
+  studentId = "user-etu-1"
+  status = "in_progress"
+  isCompleted = false
+  connectedAt = "2026-07-15 07:50:00"
+  ipAddress = "10.0.0.21"
+  waitingRoomEnteredAt = "2026-07-15 07:52:00"
+  startedAt = "2026-07-15 08:00:00"
+  submittedAt = null
+  submissionReason = null
+  autoScore = null
+  manualScore = null
+  finalScore = null
+}
+
+object "part2: ExamParticipation" as part2 {
+  id = "part-002"
+  examId = "exam-001"
+  studentId = "user-etu-2"
+  status = "in_progress"
+  isCompleted = false
+  connectedAt = "2026-07-15 07:54:00"
+  ipAddress = "10.0.0.34"
+  waitingRoomEnteredAt = "2026-07-15 07:56:00"
+  startedAt = "2026-07-15 08:00:00"
+  submittedAt = null
+  submissionReason = null
+  autoScore = null
+  manualScore = null
+  finalScore = null
+}
+
+object "autosave1: CodeAutosave" as autosave1 {
+  id = "as-001"
+  participationId = "part-001"
+  exerciseId = "ex-001"
+  content = "def somme(a, b):\n    return a + b"
+  savedAt = "2026-07-15 08:12:00"
+}
+
+object "incident1: Incident" as incident1 {
+  id = "inc-001"
+  participationId = "part-002"
+  type = "tab_switch"
+  occurredAt = "2026-07-15 08:18:00"
+  durationSeconds = 4
+  payload = null
+  metadata = {}
+}
+
+examen1 -- part1 : regroupe
+examen1 -- part2 : regroupe
+etu1 -- part1 : compose
+etu2 -- part2 : compose
+examen1 -- exoSomme : contient
+part1 -- autosave1 : conserve
+exoSomme -- autosave1 : concerne
+part2 -- incident1 : génère
+
+@enduml

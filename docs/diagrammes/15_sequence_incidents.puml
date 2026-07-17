@@ -1,0 +1,44 @@
+@startuml
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+
+title Diagramme de séquence : Enregistrement d'un incident
+
+actor "Étudiant" as E
+participant "Interface de composition" as UI
+participant "API session d'examen" as API
+participant "Service de participation" as Part
+participant "Service de correction" as Grade
+database "MySQL" as DB
+
+E -> UI : quitte le plein écran\n(ou change d'onglet, colle du contenu, etc.)
+UI -> API : signaler l'incident
+API -> Part : enregistrer l'incident
+
+Part -> DB : charger la participation et les incidents existants
+DB --> Part : participation
+
+alt session déjà terminée
+  Part --> API : aucun traitement
+  API --> UI : réponse vide
+else incident enregistrable
+  Part -> DB : créer l'incident
+  DB --> Part : incident
+
+  alt sortie du plein écran et seuil atteint
+    Part -> Part : soumettre la participation\n(raison exclusion)
+    Part -> DB : créer les soumissions et marquer exclu
+    Part -> Grade : corriger la participation
+    Grade --> Part : score
+    Part --> API : incident et exclusion
+    API --> UI : exclusion confirmée
+    UI --> E : rediriger vers la page de fin d'examen
+  else seuil non atteint ou autre type d'incident
+    Part --> API : incident enregistré
+    API --> UI : succès
+    UI --> E : avertir et exiger le retour en plein écran si besoin
+  end
+end
+
+@enduml

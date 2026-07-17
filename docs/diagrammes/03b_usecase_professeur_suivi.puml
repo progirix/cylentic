@@ -1,0 +1,39 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+
+title Diagramme de cas d'utilisation : Professeur (2/2)\nSuivi, correction et résultats
+
+actor "Professeur" as Prof
+
+rectangle "Cylentic" {
+
+  package "Suivi de l'examen" {
+    usecase "Suivre l'examen en temps réel" as UC16
+    usecase "Consulter le journal d'incidents" as UC17
+  }
+
+  package "Correction et résultats" {
+    usecase "Consulter les résultats" as UC18
+    usecase "Consulter une copie" as UC19
+    usecase "Corriger manuellement" as UC20
+  }
+
+  package "Exports" {
+    usecase "Exporter la liste de présence" as UC21
+    usecase "Exporter les résultats" as UC22
+  }
+}
+
+Prof --> UC16
+Prof --> UC17
+Prof --> UC18
+Prof --> UC19
+Prof --> UC20
+Prof --> UC21
+Prof --> UC22
+
+UC20 ..> UC18 : <<extend>>
+
+@enduml

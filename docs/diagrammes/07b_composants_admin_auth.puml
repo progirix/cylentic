@@ -1,0 +1,83 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam nodesep 35
+skinparam ranksep 40
+
+title Diagramme de composants 2/3 : Authentification, administration et facturation
+
+actor "Utilisateur" as User
+
+package "Navigateur" {
+  [Pages publiques] as Pub
+  [Espace Super Admin] as SA
+  [Espace Admin] as Adm
+}
+
+package "Application Next.js" {
+  [Middleware d'authentification] as MW
+
+  package "Couche API" {
+    [API Authentification] as ApiAuth
+    [API Établissements et utilisateurs] as ApiUsers
+    [API Facturation] as ApiBilling
+    [API Super Admin] as ApiSA
+  }
+
+  package "Couche métier" {
+    [Service Authentification] as SvcAuth
+    [Service Établissement] as SvcEtab
+    [Service Utilisateurs] as SvcUsers
+    [Service Facturation] as SvcBilling
+    [Service Super Admin] as SvcSA
+    [Validateurs Zod] as Zod
+  }
+
+  package "Accès aux données" {
+    [Repositories] as Repo
+    [Client Prisma] as Prisma
+    [Client Redis] as RedisClient
+  }
+}
+
+database "MySQL" as DB
+database "Redis" as Redis
+
+User --> Pub
+User --> SA
+User --> Adm
+
+Pub --> MW
+SA --> MW
+Adm --> MW
+
+MW --> ApiAuth
+MW --> ApiUsers
+MW --> ApiBilling
+MW --> ApiSA
+
+ApiAuth --> SvcAuth
+ApiUsers --> SvcEtab
+ApiUsers --> SvcUsers
+ApiBilling --> SvcBilling
+ApiSA --> SvcSA
+
+SvcAuth --> Zod
+SvcEtab --> Zod
+SvcUsers --> Zod
+SvcBilling --> Zod
+
+SvcAuth --> Repo
+SvcEtab --> Repo
+SvcUsers --> Repo
+SvcBilling --> Repo
+SvcSA --> Repo
+
+Repo --> Prisma
+Prisma --> DB
+
+SvcAuth --> RedisClient
+RedisClient --> Redis
+
+@enduml

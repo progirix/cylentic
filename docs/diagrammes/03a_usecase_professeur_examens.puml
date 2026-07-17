@@ -1,0 +1,59 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+
+title Diagramme de cas d'utilisation : Professeur (1/2)\nConception et publication des examens
+
+actor "Professeur" as Prof
+
+rectangle "Cylentic" {
+
+  package "Authentification" {
+    usecase "Se connecter" as UC1
+    usecase "Changer son mot de passe" as UC2
+  }
+
+  package "Vue d'ensemble" {
+    usecase "Consulter le tableau de bord" as UC3
+    usecase "Consulter les statistiques" as UC4
+  }
+
+  package "Gestion des examens" {
+    usecase "Créer un examen" as UC5
+    usecase "Consulter les examens" as UC6
+    usecase "Supprimer un examen" as UC7
+    usecase "Publier l'examen" as UC8
+    usecase "Générer le code d'accès" as UC9
+    usecase "Afficher le code en mode présentation" as UC10
+  }
+
+  package "Contenu pédagogique" {
+    usecase "Ajouter un exercice de code" as UC11
+    usecase "Définir les tests unitaires" as UC12
+    usecase "Ajouter des questions QCM" as UC13
+    usecase "Modifier un exercice" as UC14
+    usecase "Supprimer un exercice" as UC15
+  }
+}
+
+Prof --> UC1
+Prof --> UC2
+Prof --> UC3
+Prof --> UC4
+Prof --> UC5
+Prof --> UC6
+Prof --> UC7
+Prof --> UC8
+Prof --> UC10
+Prof --> UC11
+Prof --> UC12
+Prof --> UC13
+Prof --> UC14
+Prof --> UC15
+
+UC3 ..> UC4 : <<include>>
+UC8 ..> UC9 : <<include>>
+UC12 ..> UC11 : <<extend>>
+
+@enduml

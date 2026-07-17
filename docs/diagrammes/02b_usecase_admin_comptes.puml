@@ -1,0 +1,36 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+
+title Diagramme de cas d'utilisation : Administrateur d'établissement (2/2)\nComptes et exploitation
+
+actor "Administrateur\nd'établissement" as Admin
+
+rectangle "Cylentic" {
+
+  package "Gestion des utilisateurs" {
+    usecase "Créer un étudiant" as UC11
+    usecase "Consulter les étudiants" as UC12
+    usecase "Créer un professeur" as UC13
+    usecase "Consulter les professeurs" as UC14
+  }
+
+  package "Exploitation" {
+    usecase "Consulter le journal d'activité" as UC15
+    usecase "Consulter l'abonnement" as UC16
+    usecase "Changer de plan tarifaire" as UC17
+  }
+}
+
+Admin --> UC11
+Admin --> UC12
+Admin --> UC13
+Admin --> UC14
+Admin --> UC15
+Admin --> UC16
+Admin --> UC17
+
+UC17 ..> UC16 : <<include>>
+
+@enduml

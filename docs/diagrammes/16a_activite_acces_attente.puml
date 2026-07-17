@@ -1,0 +1,38 @@
+@startuml
+skinparam shadowing false
+skinparam ActivityBorderColor #333333
+skinparam ActivityBackgroundColor #FFFFFF
+skinparam ActivityDiamondBackgroundColor #FFFFFF
+
+title Diagramme d'activité 1/2 : Accès et mise en salle d'attente
+
+start
+
+:Saisir identifiant, mot de passe et code d'examen;
+:Authentifier l'étudiant et vérifier le code;
+
+if (Accès autorisé ?) then (non)
+  :Afficher le message d'erreur;
+  stop
+else (oui)
+endif
+
+:Afficher les consignes de sécurité;
+:Activer le plein écran;
+:Créer ou mettre à jour la participation;
+:Entrer en salle d'attente;
+
+while (Heure de début atteinte ?) is (non)
+  :Rester en salle d'attente;
+endwhile (oui)
+
+:Passer en phase de composition;
+
+note right
+  Suite dans le diagramme
+  d'activité 2/2
+end note
+
+stop
+
+@enduml

@@ -1,0 +1,148 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam nodesep 35
+skinparam ranksep 40
+hide empty methods
+hide circle
+
+title Diagramme de classes 3/3 : Passation, soumissions et incidents
+
+class User {
+  id
+  identifier
+  role
+  email
+  firstName
+  lastName
+  passwordHash
+  mustChangePassword
+  isActive
+  lastLoginAt
+}
+
+class Exam {
+  id
+  name
+  status
+  startAt
+  durationMinutes
+  accessDelayMinutes
+  correctionMode
+  accessCode
+  maxIncidentsBeforeClose
+  publishedAt
+  startedAt
+  endedAt
+}
+
+class Exercise {
+  id
+  type
+  title
+  statement
+  language
+  points
+  correctionMode
+  orderIndex
+}
+
+class UnitTest {
+  id
+  input
+  expectedOutput
+  weight
+  isHidden
+  orderIndex
+}
+
+class QcmQuestion {
+  id
+  text
+  answerType
+  points
+  explanation
+  orderIndex
+}
+
+class QcmChoice {
+  id
+  text
+  isCorrect
+  orderIndex
+}
+
+class ExamParticipation {
+  id
+  status
+  isCompleted
+  connectedAt
+  ipAddress
+  waitingRoomEnteredAt
+  startedAt
+  submittedAt
+  submissionReason
+  autoScore
+  manualScore
+  finalScore
+}
+
+class Submission {
+  id
+  sourceCode
+  language
+  autoScore
+  manualScore
+  finalScore
+  comment
+  submittedAt
+}
+
+class SubmissionTestResult {
+  id
+  passed
+  actualOutput
+  stderr
+  status
+  timeMs
+  memoryKb
+}
+
+class QcmAnswer {
+  id
+  createdAt
+}
+
+class CodeAutosave {
+  id
+  content
+  savedAt
+}
+
+class Incident {
+  id
+  type
+  occurredAt
+  durationSeconds
+  payload
+}
+
+Exam "1" -- "0..*" ExamParticipation : "regroupe"
+User "1" -- "0..*" ExamParticipation : "compose"
+ExamParticipation "1" -- "0..*" Submission : "produit"
+Exercise "1" -- "0..*" Submission : "cible"
+ExamParticipation "1" -- "0..*" CodeAutosave : "conserve"
+Exercise "1" -- "0..*" CodeAutosave : "concerne"
+ExamParticipation "1" -- "0..*" Incident : "génère"
+Submission "1" -- "0..*" SubmissionTestResult : "obtient"
+UnitTest "1" -- "0..*" SubmissionTestResult : "vérifie"
+Submission "1" -- "0..*" QcmAnswer : "contient"
+QcmQuestion "1" -- "0..*" QcmAnswer : "reçoit"
+QcmChoice "1" -- "0..*" QcmAnswer : "sélectionne"
+Exam "1" -- "0..*" Exercise : "contient"
+Exercise "1" -- "0..*" UnitTest : "évalue"
+Exercise "1" -- "0..*" QcmQuestion : "pose"
+QcmQuestion "1" -- "0..*" QcmChoice : "propose"
+
+@enduml

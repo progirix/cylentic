@@ -1,0 +1,55 @@
+@startuml
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+
+title Diagramme de séquence : Soumission et correction
+
+actor "Étudiant" as E
+participant "Interface de composition" as UI
+participant "API session d'examen" as API
+participant "Service de participation" as Part
+participant "Service de correction" as Grade
+participant "Service sandbox" as Sandbox
+database "MySQL" as DB
+
+E -> UI : demande la soumission\n(ou expiration du timer)
+UI -> API : soumettre la participation
+API -> Part : soumettre
+
+Part -> DB : charger la participation, l'examen,\nles exercices et les sauvegardes automatiques
+DB --> Part : données de session
+
+loop pour chaque exercice
+  alt exercice de type code
+    Part -> DB : créer ou mettre à jour la soumission\nà partir de la sauvegarde automatique
+  else exercice de type QCM
+    Part -> DB : créer ou mettre à jour la soumission\net enregistrer les réponses QCM
+  end
+end
+
+Part -> DB : marquer la participation comme terminée\n(statut soumis)
+Part -> Grade : corriger la participation
+
+loop pour chaque soumission
+  alt exercice code en correction automatique
+    Grade -> DB : charger les tests unitaires
+    loop pour chaque test
+      Grade -> Sandbox : exécuter le code avec le test
+      Sandbox --> Grade : résultat
+      Grade -> DB : enregistrer le résultat du test
+    end
+    Grade -> DB : calculer et enregistrer le score automatique
+  else exercice QCM
+    Grade -> DB : comparer les réponses aux choix corrects
+    Grade -> DB : calculer et enregistrer le score
+  end
+end
+
+Grade -> DB : totaliser le score de la participation
+Grade --> Part : score calculé
+Part --> API : soumission enregistrée
+API --> UI : succès
+UI --> E : afficher la confirmation de soumission
+
+@enduml
