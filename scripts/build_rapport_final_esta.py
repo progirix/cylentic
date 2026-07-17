@@ -733,18 +733,6 @@ def build():
     h(doc, "Remerciements", 1, "bm_remerciements")
     p(
         doc,
-        "Nous tenons à exprimer notre profonde gratitude à toutes les personnes et "
-        "institutions qui ont contribué, de près ou de loin, à la réalisation de "
-        "notre projet de fin d'année.",
-    )
-    p(
-        doc,
-        "Nous adressons tout d'abord nos sincères remerciements à Dieu Tout-Puissant "
-        "pour la santé, la force et la persévérance qu'Il nous a accordées tout au "
-        "long de notre parcours académique.",
-    )
-    p(
-        doc,
         f"{ENCADRANT_P}, notre encadrant principal, dont les conseils avisés, la "
         "disponibilité, la rigueur scientifique et les orientations ont été "
         "déterminants dans la conduite de ce projet.",
@@ -753,24 +741,6 @@ def build():
         doc,
         f"{ENCADRANT_S}, notre encadrant, pour ses conseils méthodologiques et "
         "techniques, ainsi que pour son accompagnement tout au long de ce travail.",
-    )
-    p(
-        doc,
-        "L'ensemble du corps professoral et administratif de l'Institut du Génie "
-        "Informatique pour la qualité de la formation reçue et pour l'encadrement "
-        "académique dont nous avons bénéficié.",
-    )
-    p(
-        doc,
-        "Notre gratitude à nos collègues, amis et camarades de promotion pour leurs "
-        "encouragements, leurs conseils et les échanges constructifs, notamment ceux "
-        "qui ont testé les premiers parcours d'examen et signalé les points durs de "
-        "l'interface.",
-    )
-    p(
-        doc,
-        "Notre famille, pour son soutien moral, sa compréhension et sa confiance "
-        "tout au long de nos études.",
     )
     p(
         doc,
