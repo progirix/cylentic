@@ -31,8 +31,8 @@ AUTEURS = [
     "OUÉDRAOGO Aïcha",
     "TANKOANO Martin",
 ]
-ENCADRANT_P = "Dr. KABORÉ Jean-Baptiste, Enseignant-chercheur"
-ENCADRANT_S = "M. ZONGO Paul, Ingénieur informatique"
+ENCADRANT_P = "Dr YANOGO K Jean Hermann"
+ENCADRANT_S = "Dr KYELEM"
 
 
 def set_run_font(run, size=12, bold=False, italic=False):
@@ -733,21 +733,50 @@ def build():
     h(doc, "Remerciements", 1, "bm_remerciements")
     p(
         doc,
-        "Nous remercions notre encadrant principal pour sa disponibilité, ses "
-        "remarques précises et l'exigence maintenue à chaque étape. Nous remercions "
-        "également notre second encadrant pour ses conseils méthodologiques et "
-        "techniques.",
+        "Nous tenons à exprimer notre profonde gratitude à toutes les personnes et "
+        "institutions qui ont contribué, de près ou de loin, à la réalisation de "
+        "notre projet de fin d'année.",
     )
     p(
         doc,
-        "Nos remerciements vont à l'administration et au corps enseignant de notre "
-        "établissement, ainsi qu'aux camarades qui ont testé les premiers parcours "
-        "de passation et signalé les points durs de l'interface.",
+        "Nous adressons tout d'abord nos sincères remerciements à Dieu Tout-Puissant "
+        "pour la santé, la force et la persévérance qu'Il nous a accordées tout au "
+        "long de notre parcours académique.",
     )
     p(
         doc,
-        "Enfin, nous remercions nos familles pour le soutien quotidien sans lequel "
-        "ce travail n'aurait pas abouti dans les délais impartis.",
+        f"{ENCADRANT_P}, notre encadrant principal, dont les conseils avisés, la "
+        "disponibilité, la rigueur scientifique et les orientations ont été "
+        "déterminants dans la conduite de ce projet.",
+    )
+    p(
+        doc,
+        f"{ENCADRANT_S}, notre encadrant, pour ses conseils méthodologiques et "
+        "techniques, ainsi que pour son accompagnement tout au long de ce travail.",
+    )
+    p(
+        doc,
+        "L'ensemble du corps professoral et administratif de l'Institut du Génie "
+        "Informatique pour la qualité de la formation reçue et pour l'encadrement "
+        "académique dont nous avons bénéficié.",
+    )
+    p(
+        doc,
+        "Notre gratitude à nos collègues, amis et camarades de promotion pour leurs "
+        "encouragements, leurs conseils et les échanges constructifs, notamment ceux "
+        "qui ont testé les premiers parcours d'examen et signalé les points durs de "
+        "l'interface.",
+    )
+    p(
+        doc,
+        "Notre famille, pour son soutien moral, sa compréhension et sa confiance "
+        "tout au long de nos études.",
+    )
+    p(
+        doc,
+        "Nos sincères remerciements à toutes les personnes qui, d'une manière ou "
+        "d'une autre, ont contribué à la réalisation de ce rapport et à la réussite "
+        "de notre formation.",
     )
 
     # ===== SOMMAIRE (grands titres seulement) =====
