@@ -1332,8 +1332,7 @@ def build():
         "[2] R. S. Pressman et B. R. Maxim, Software Engineering: A Practitioner's Approach, 9e éd., McGraw-Hill, 2019.",
         "[3] I. Sommerville, Software Engineering, 10e éd., Pearson, 2016.",
         "[4] G. Booch, J. Rumbaugh et I. Jacobson, The Unified Modeling Language User Guide, 2e éd., Addison-Wesley, 2005.",
-        "[5] ESTA, Guide du stagiaire Master/Ingénieur, année académique 2024-2025.",
-        "[6] M. Fowler, Patterns of Enterprise Application Architecture, Addison-Wesley, 2002.",
+        "[5] M. Fowler, Patterns of Enterprise Application Architecture, Addison-Wesley, 2002.",
     ]
     for ref in biblio_refs:
         p(doc, ref, align="left", first_line=False, space_after=6)
