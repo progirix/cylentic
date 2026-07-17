@@ -733,6 +733,12 @@ def build():
     h(doc, "Remerciements", 1, "bm_remerciements")
     p(
         doc,
+        "Nous tenons à exprimer notre profonde gratitude à toutes les personnes "
+        "qui ont contribué, de près ou de loin, à la réalisation de notre projet "
+        "de fin d'année.",
+    )
+    p(
+        doc,
         f"{ENCADRANT_P}, notre encadrant principal, dont les conseils avisés, la "
         "disponibilité, la rigueur scientifique et les orientations ont été "
         "déterminants dans la conduite de ce projet.",
